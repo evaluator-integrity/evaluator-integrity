@@ -1,0 +1,45 @@
+{
+  "config_id": "deepeval/g-eval-as-documented",
+  "source_type": "framework_default_template",
+  "source_url": "https://deepeval.com/docs/metrics-llm-evals",
+  "artifact": "deepeval==4.1.5",
+  "artifact_registry": "pypi",
+  "artifact_path": "deepeval/templates/metrics/templates.json",
+  "artifact_sha256": "e4705dd4540177f81e4a90bc02f3e10900587e4738ae9e896e02c28a977dfdaf",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "verifiable",
+  "stratum": "framework_default",
+  "framework": "deepeval",
+  "framework_version": "4.1.5",
+  "domain": "general",
+  "wedge_adjacent": true,
+  "notes": "G-Eval following documented guidance: explicit evaluation_steps, explicit rubric, named judge model, default threshold. This is Config A in the demo -- the configuration the search loop attacks. The stronger reading of the docs was taken at every choice point.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "fail",
+      "evidence": "GEval.measure(LLMTestCase(input=..., actual_output=...)) passes the candidate into the judge context in a single call. No stage produces the judge's own answer first, and no documented option adds one.",
+      "judgement_call": false,
+      "recompute_variant": false
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "fail",
+      "evidence": "Reference-free: no expected_output supplied, so the judge score is the only correctness signal. Supplying expected_output would require reference solutions the team does not have, which is why reference-free is what ships.",
+      "judgement_call": true,
+      "reference_supplied": false,
+      "reasoning": "Scored fail even where a reference is supplied. A reference handed to the judge improves the judge -- agreement rises from 0.34-0.74 to 0.85-0.96 (arXiv:2607.12885) -- but it does not create a second instrument. There is still exactly one thing producing the verdict and nothing that could observe it failing. Recorded with reference_supplied so the two populations can be reported separately."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}

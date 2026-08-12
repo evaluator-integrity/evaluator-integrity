@@ -1,0 +1,45 @@
+{
+  "config_id": "braintrust-autoevals/factuality",
+  "source_type": "framework_default_template",
+  "source_url": "https://github.com/braintrustdata/autoevals/blob/main/templates/factuality.yaml",
+  "artifact": "autoevals==0.3.0",
+  "artifact_registry": "pypi",
+  "artifact_path": "autoevals/templates/factuality.yaml",
+  "artifact_sha256": "9ab5f2c251f821746c7a9aa76672074cf955e5697ad3791b8bba9dc2d8a87efc",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "verifiable",
+  "stratum": "framework_default",
+  "framework": "braintrust-autoevals",
+  "framework_version": "0.3.0",
+  "domain": "general",
+  "wedge_adjacent": true,
+  "notes": "OpenAI's fact.yaml with Mustache variables and scores added. Braintrust's contribution is the scoring OpenAI never shipped: A=0.4, B=0.6, C=1, D=0, E=1. Two consequences worth recording: E ('the answers differ, but these differences don't matter from the perspective of factuality') scores a full 1.0 on a self-certified escape hatch with no constraint on what 'doesn't matter' means; and B (correct plus unverified extra claims) scores 0.6 while A (correct but incomplete) scores 0.4 -- the default rewards adding unchecked content over omitting it. Reasoning is a `reasons` field emitted in the SAME generation as `choice`, so reason-then-decide is not structurally guaranteed.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "fail",
+      "evidence": "Single call, single user message, no system message. COT_SUFFIX is appended in code (use_cot=True by default): 'Answer the question by calling `select_choice` with your reasoning in a step-by-step matter to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.' -- with {{output}} already in the prompt above it. Note the typo 'in a step-by-step matter', a mutation of OpenAI's 'in a step by step manner' and a usable fingerprint for tracing this lineage.",
+      "judgement_call": false,
+      "recompute_variant": true
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "fail",
+      "evidence": "Requires {{expected}}, supplied to the judge.",
+      "judgement_call": true,
+      "reference_supplied": true,
+      "reasoning": "Scored fail even where a reference is supplied. A reference handed to the judge improves the judge -- agreement rises from 0.34-0.74 to 0.85-0.96 (arXiv:2607.12885) -- but it does not create a second instrument. There is still exactly one thing producing the verdict and nothing that could observe it failing. Recorded with reference_supplied so the two populations can be reported separately."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}

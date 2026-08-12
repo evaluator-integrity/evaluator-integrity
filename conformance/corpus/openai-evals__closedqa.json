@@ -1,0 +1,45 @@
+{
+  "config_id": "openai-evals/closedqa",
+  "source_type": "framework_default_template",
+  "source_url": "https://github.com/openai/evals/blob/main/evals/registry/modelgraded/closedqa.yaml",
+  "artifact": "evals==3.0.1.post1",
+  "artifact_registry": "pypi",
+  "artifact_path": "evals/registry/modelgraded/closedqa.yaml",
+  "artifact_sha256": "4b9cc293fa7b261ede7d03e7e71bcb7749c5d350aa464e3cb336be15c3a6b0cb",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "verifiable",
+  "stratum": "framework_default",
+  "framework": "openai-evals",
+  "framework_version": "repo live; hosted Evals platform read-only 31 Oct 2026, shutdown 30 Nov 2026",
+  "domain": "general",
+  "wedge_adjacent": true,
+  "notes": "Byte-verified at 831 bytes, no trailing newline. The ancestor of the LangChain, Braintrust and promptfoo closedqa/criteria prompts. Note it hardcodes its CoT instruction AND sets eval_type: cot_classify, whose ANSWER_PROMPTS entry is a near-duplicate -- a registry entry wiring both would show the judge conflicting output-format instructions twice. PLAUSIBLE, not confirmed: no shipped registry entry wires closedqa end-to-end.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "fail",
+      "evidence": "Single call. '[Submission]: {completion}' precedes the instruction 'First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.'. Reasoning is scoped to the criterion rather than to solving the task, but it is generated after the candidate has been read, and 'the correct answers' is ambiguous between the Y/N verdict and the answer to the task.",
+      "judgement_call": false,
+      "recompute_variant": true
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "fail",
+      "evidence": "Reference-free with respect to a gold answer; requires a {criteria} string instead.",
+      "judgement_call": true,
+      "reference_supplied": false,
+      "reasoning": "Scored fail even where a reference is supplied. A reference handed to the judge improves the judge -- agreement rises from 0.34-0.74 to 0.85-0.96 (arXiv:2607.12885) -- but it does not create a second instrument. There is still exactly one thing producing the verdict and nothing that could observe it failing. Recorded with reference_supplied so the two populations can be reported separately."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}

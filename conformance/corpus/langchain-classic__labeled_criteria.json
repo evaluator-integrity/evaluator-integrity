@@ -1,0 +1,45 @@
+{
+  "config_id": "langchain-classic/labeled_criteria",
+  "source_type": "framework_default_template",
+  "source_url": "https://github.com/langchain-ai/langchain/blob/185119f98e6286253a2326d7cf4f59592678023d/libs/langchain/langchain_classic/evaluation/criteria/prompt.py",
+  "artifact": "langchain-classic==1.0.8",
+  "artifact_registry": "pypi",
+  "artifact_path": "langchain_classic/evaluation/criteria/prompt.py",
+  "artifact_sha256": "012e0f1e045f7385d17283e107730febc39f1e1bb4e7f5d19680c907359538d3",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "verifiable",
+  "stratum": "framework_default",
+  "framework": "langchain",
+  "framework_version": "langchain-classic 1.0.8",
+  "domain": "general",
+  "wedge_adjacent": true,
+  "notes": "Identical to `criteria` except for an injected [Reference] block. The judge sees the ground truth and the submission simultaneously.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "fail",
+      "evidence": "Single call, same instruction as `criteria`: 'First, write out in a step by step manner your reasoning about each criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.', with both [Submission] and [Reference] already in context.",
+      "judgement_call": false,
+      "recompute_variant": true
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "fail",
+      "evidence": "{reference} is required, and is placed in the judge's context alongside the submission.",
+      "judgement_call": true,
+      "reference_supplied": true,
+      "reasoning": "Scored fail even where a reference is supplied. A reference handed to the judge improves the judge -- agreement rises from 0.34-0.74 to 0.85-0.96 (arXiv:2607.12885) -- but it does not create a second instrument. There is still exactly one thing producing the verdict and nothing that could observe it failing. Recorded with reference_supplied so the two populations can be reported separately."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}

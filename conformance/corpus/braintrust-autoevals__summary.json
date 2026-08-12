@@ -1,0 +1,44 @@
+{
+  "config_id": "braintrust-autoevals/summary",
+  "source_type": "framework_default_template",
+  "source_url": "https://github.com/braintrustdata/autoevals/blob/main/templates/summary.yaml",
+  "artifact": "autoevals==0.3.0",
+  "artifact_registry": "pypi",
+  "artifact_path": "autoevals/templates/summary.yaml",
+  "artifact_sha256": "1492467f239afe8075609c8a2a4faf2add7dd5c0955bcf87b3910e5ea9d74219",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "subjective",
+  "stratum": "framework_default",
+  "framework": "braintrust-autoevals",
+  "framework_version": "0.3.0",
+  "domain": "general",
+  "wedge_adjacent": true,
+  "notes": "Pairwise preference, not solve-then-judge. Three properties of the shipped default worth recording: the expert summary is ALWAYS labelled A and always first, the candidate ALWAYS B, with no randomisation or swap-and-average -- so any position or label bias maps directly and monotonically onto the score. And scoring is binary A=0, B=1, so the only way to score above zero is for the judge to prefer the candidate OVER the human expert summary; a candidate judged merely equal scores 0. 'Summarization quality: 1.0' therefore means something materially different from what a downstream consumer would assume. POSITION BIAS IS A V0.2 CANDIDATE CRITERION for pairwise configs.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "not_applicable",
+      "evidence": "Summarisation quality; no determinable answer.",
+      "judgement_call": true,
+      "reasoning": "See SCOPE_NOTE."
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "not_applicable",
+      "evidence": "Out of v0.1 scope.",
+      "judgement_call": true,
+      "reasoning": "See SCOPE_NOTE."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}

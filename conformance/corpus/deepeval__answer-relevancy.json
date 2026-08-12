@@ -1,0 +1,44 @@
+{
+  "config_id": "deepeval/answer-relevancy",
+  "source_type": "framework_default_template",
+  "source_url": "https://github.com/confident-ai/deepeval/tree/v4.1.5/deepeval/metrics/answer_relevancy/templates",
+  "artifact": "deepeval==4.1.5",
+  "artifact_registry": "pypi",
+  "artifact_path": "deepeval/templates/metrics/templates.json",
+  "artifact_sha256": "e4705dd4540177f81e4a90bc02f3e10900587e4738ae9e896e02c28a977dfdaf",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "subjective",
+  "stratum": "framework_default",
+  "framework": "deepeval",
+  "framework_version": "4.1.5",
+  "domain": "rag",
+  "wedge_adjacent": true,
+  "notes": "Three LLM calls: extract statements from actual_output (input absent), grade statements against input, generate reason. Staged, but no stage produces an answer to the task. Note 'idk' verdicts count as relevant, which biases the score upward.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "not_applicable",
+      "evidence": "Metric judges relevance, not correctness; task class is subjective.",
+      "judgement_call": true,
+      "reasoning": "Out of v0.1 scope -- see SCOPE_NOTE. Relevance has no determinable answer to commit to."
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "not_applicable",
+      "evidence": "Out of v0.1 scope for the same reason.",
+      "judgement_call": true,
+      "reasoning": "See SCOPE_NOTE."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}

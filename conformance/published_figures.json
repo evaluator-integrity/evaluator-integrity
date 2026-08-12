@@ -1,0 +1,22 @@
+{
+  "_note": "Every number this project publishes, derived from the committed corpus by conformance.report.derive_figures. CI re-derives these on every push; a mismatch fails the build. Regenerate deliberately, and update everything that quotes the changed number.",
+  "records_total": 27,
+  "records_in_c1_scope": 24,
+  "c1_pass": 0,
+  "c1_fail": 24,
+  "recompute_variants": 9,
+  "reference_supplied": 13,
+  "reference_supplied_of": 24,
+  "framework_default_in_scope": 24,
+  "frameworks": [
+    "arize-phoenix-evals",
+    "braintrust-autoevals",
+    "deepeval",
+    "langchain",
+    "mlflow",
+    "openai-evals",
+    "openevals",
+    "promptfoo",
+    "ragas"
+  ]
+}

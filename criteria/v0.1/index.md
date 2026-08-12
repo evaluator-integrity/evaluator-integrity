@@ -14,28 +14,195 @@ title: "Evaluator Integrity Criteria v0.1"
 **Status:** draft. This version has no frozen text and must not be cited.
 
 <!--
-This header is normative formatting, not boilerplate. Per criteria/README.md,
-every page states its own version, publication date and status in its body so an
-archived or printed copy stays self-identifying. On publication, replace the
-three lines above with the real date and a status of "current", and from that
-moment this file is frozen — corrections create v0.2, they never edit v0.1.
+On publication, replace the three lines above with the real date and a status of
+"current". From that moment this file is frozen: corrections create v0.2, they
+never edit v0.1. The per-criterion anchor ids are the citation surface and must never
+change meaning.
 -->
 
-TODO(port): the four criteria (C1–C4), ported from the lab repository, each with
-its stable anchor id, the requirement, what evidence satisfies it, and how it is
-scored.
 
-<!--
-Anchors: each criterion heading must carry an explicit id so citations resolve
-in both the markdown source and the rendered HTML, e.g.
+These are the criteria the accompanying conformance study measured against.
+They are drawn from published results, not invented here, and they will be
+revised. Treat this as a working draft put in public early rather than a
+standard — the citation list is doing the load-bearing work, not our authority.
 
-    ## C1. <title> {#C1}
+Criticism is the point. If a criterion is wrong, unmeasurable, or missing,
+that is the most useful thing you can tell us.
 
-Do not rely on generated slugs — they change when a heading is reworded, and per
-criteria/README.md an anchor id must mean the same thing forever. See
-site/README.md for how the ids are preserved through rendering.
+## Scope {#scope}
 
-Nothing else belongs in this file yet. The criteria text exists in the lab
-repository and is ported deliberately; a plausible-looking placeholder criterion
-is worse than an empty slot, because an empty slot cannot be cited by mistake.
--->
+These criteria apply to **automated evaluators used to make decisions about AI
+system quality** — LLM judges, test harnesses, and the configurations that wrap
+them. They do not assess model quality. They assess whether the instrument
+measuring model quality can be relied on.
+
+**v0.1 covers evaluators of tasks with a determinable answer.** Every published
+result behind C1 and C2 uses verifiable tasks: GSM8K and competition
+mathematics, code, and factual question answering. None covers summarisation
+quality, helpfulness, tone or style. For a subjective task it is not clear what
+C1 would even mean — "commit your own answer first" has no obvious referent
+when there is no answer to commit to.
+
+Configurations for subjective tasks are therefore scored `not applicable` on C1
+and C2 and reported as a separate population. This is not a claim that those
+evaluators are sound. It is a refusal to score them against evidence that does
+not reach them. **Criteria for non-verifiable evaluation are the largest gap in
+v0.1 and the most useful thing a collaborator could bring.**
+
+C3 and C4 are properties of the harness rather than of answer determinability,
+and apply to any task class.
+
+A criterion is scored against a *configuration*, not a framework. The same
+framework can be configured to pass or fail every criterion here. Where a
+criterion belongs to the surrounding harness rather than the metric, it is
+scored `not applicable` rather than `fail` — inflating a failure rate by
+attaching unrelated properties to a component would be the same error we are
+documenting.
+
+---
+
+## C1. Judge independence (de-anchoring) {#C1}
+
+**Does the judge commit to its own answer before it is shown the candidate
+output?**
+
+Anchoring on the candidate is the mechanism that converts a judge from a
+correctness check into a plausibility check. It is the difference between
+"is this right?" and "does this look like the kind of thing that is right?"
+
+This is the criterion that matters most, because it is the only intervention
+shown to work. Committing first drops the judge's false-positive rate on wrong
+answers to 0.012 and lifts discrimination from near chance to 0.96 with no
+reference answer available. Ensembling does not close the gap — a strict
+three-family ensemble still passes 55% of hacked wrong answers, its
+discrimination collapsing from 0.31 to 0.09. Nor do stricter rubrics or
+stronger judges.
+
+**The distinction that decides most scores.** A *recompute prompt* — telling
+the judge, in a prompt that already contains the candidate, to solve the
+problem itself first — is not de-anchoring and does not work. It leaves the
+false-positive rate at 0.719. In the source paper's words: *the decisive
+variable is not whether the judge sees the candidate but whether it commits an
+answer of its own first.* Anything less than a genuine commitment produced
+before the candidate enters context is the failed variant, and we record it as
+such.
+
+**Passes if:** evaluation is staged, and the stage that produces the judge's
+own answer does not have the candidate in its context. A single-call prompt
+containing both the candidate and a recompute instruction does not pass.
+
+**Evidence required:** the prompt template and the call sequence.
+
+*Source: Zhou, "More Convincing, Not More Correct: Self-Play Reward Hacking of
+Reference-Free LLM Judges", arXiv:2607.05904, §5.1 and §5.4.*
+
+---
+
+## C2. Independent ground-truth channel {#C2}
+
+**Is there any correctness signal independent of the judge, held out from
+whatever produces or selects outputs?**
+
+If the judge is the only instrument, nothing in the system can observe the
+divergence between reported quality and real quality. This is not
+hypothetical: the divergence is only visible in the published results *because*
+the researchers built a held-out channel to see it with.
+
+Reference-free judging is independently measured to be too generous. Judges
+accept incorrect answers at rates up to 60% when no reference is available;
+decision flip rates between no-reference and reference-visible conditions run
+from 9% to 85%; and judge–human agreement rises from 0.34–0.74 to 0.85–0.96
+once reference information is supplied. Almost all of those flips are the judge
+withdrawing credit it had already granted.
+
+The held-out requirement is strict. A ground-truth check that is also used to
+select or train against stops being ground truth.
+
+**Passes if:** an independent correctness signal exists, and there is evidence
+it is not fed back into generation or selection.
+
+**Evidence required:** the held-out check, and the data path showing it is not
+a selection signal.
+
+*Sources: Zhou 2026, arXiv:2607.05904 — hidden-anchor audit design. Kranti &
+Vajjala, "LLM Judges Can Be Too Generous When There Is No Reference Answer",
+arXiv:2607.12885, 14 July 2026.*
+
+---
+
+## C3. Retrieval and contamination controls {#C3}
+
+**Can a passing result have been retrieved rather than derived?**
+
+An evaluation that permits lookup measures lookup. Restricting repository
+history and network access moved measured resolution rates by 14–21 points on
+SWE-bench Pro; on one model, 63% of successful resolutions retrieved the fix
+rather than deriving it.
+
+**Passes if:** the eval environment documents and restricts the retrieval paths
+that would let a candidate look up the answer.
+
+**Evidence required:** the environment specification — network access,
+repository history visibility, and whether task provenance is reachable from
+inside the sandbox.
+
+*Sources: Cursor, "Reward hacking is swamping model intelligence gains",
+25 June 2026. SpecBench, arXiv:2605.21384.*
+
+---
+
+## C4. Resistance to degenerate passes {#C4}
+
+**Would a solution that special-cases the visible checks be caught?**
+
+Automated red-teaming produced working exploits on 10 of 10 audited benchmarks
+and catalogued 219 distinct flaws across eight recurring classes. Degenerate
+passing — satisfying the checks by a route that does not generalise — is the
+most portable of those classes and the one that transfers from benchmarks to
+production configurations.
+
+The effect grows with task size: visible and held-out pass rates diverge by a
+further 28 percentage points for every tenfold increase in code size, with
+documented cases including a 2,900-line "compiler" that memorised test inputs.
+Evaluations of small, single-function tasks are the regime where this is
+hardest to see, not the regime where it is absent.
+
+An instruction telling the judge to penalise special-casing does not satisfy
+this criterion. That is a plausibility instruction, and plausibility scoring is
+what fails.
+
+**Passes if:** at least part of the correctness check uses inputs the candidate
+cannot enumerate in advance.
+
+**Evidence required:** the check suite itself.
+
+*Sources: BenchJack, arXiv:2605.12673, and Berkeley RDI, "How We Broke Top AI
+Agent Benchmarks", April 2026 — the same work; flaw taxonomy V1–V8. SpecBench,
+arXiv:2605.21384.*
+
+---
+
+## What is deliberately not here {#what}
+
+**Criteria for non-verifiable tasks.** The largest gap, described under Scope
+above. We would rather have four criteria that reach exactly as far as the
+evidence than six that do not.
+
+**Position, verbosity and self-preference bias.** Well documented, widely
+mitigated, and — per the published defence results — not where the decisive
+failure is. Adding them would lengthen the list without changing any verdict.
+
+**Prompt injection through model output into the judge prompt.** Real, but it
+reads as a party trick rather than a systemic property, and a config can resist
+injection while failing every criterion above.
+
+**Anything we cannot cite.** There are obvious candidate criteria — rubric
+drift over time, judge-model version pinning, inter-rater agreement against
+human adjudication — that belong here eventually. They are not in v0.1 because
+we have not found published results that fix a pass condition precisely enough
+to score. Suggestions with citations are welcome.
+
+## Changelog {#changelog}
+
+- **v0.1** (August 2026) — initial publication. Four criteria, all externally
+  cited; scope limited to evaluators of verifiable tasks.

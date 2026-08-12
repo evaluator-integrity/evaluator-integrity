@@ -1,16 +1,218 @@
-"""The criteria as executable data.
+"""Framework v0.1 criteria, in executable form.
 
-TODO(port): the four criteria (C1-C4) as structured records -- stable id, title,
-what evidence satisfies them, and how each is scored -- ported from the lab
-harness so that `criteria/v0.1/index.md` and this module are two renderings of
-one definition.
+Every criterion is externally cited. That is the rule (Brief v2 §7): a short
+cited list is stronger than a long invented one. If you want to add a
+criterion, find the published result that justifies it first. If there isn't
+one, it belongs in a "candidate criteria" file, not here.
 
-Two constraints on whatever lands here:
+`criteria/v0.1/index.md` is the human-readable published version of this file.
+They are two renderings of one definition and a test asserts they agree; the
+markdown is what people cite, this module is what scores.
 
-  * The ids are the published anchors (#C1 ... #C4). They are part of the
+TWO CONSTRAINTS, both from criteria/README.md:
+
+  * The ids ARE the published anchors (#C1 ... #C4). They are part of the
     citation surface and never change meaning across versions.
-  * A version that has been published is frozen. Adding v0.2 must not alter
-    how v0.1 scores; keep versions side by side rather than mutating one.
+  * A published version is frozen. Adding v0.2 must not change how v0.1 scores.
+    When that day comes, this module grows a version dimension -- versions sit
+    side by side, never mutate in place. VERSION below is the version this
+    module currently scores against, not a value to bump casually.
 """
 
 from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Criterion:
+    id: str
+    title: str
+    question: str
+    why: str
+    citation: str
+    evidence_required: str
+    # What a config must show to pass. Deliberately narrow: a criterion you
+    # cannot fail cleanly is not a criterion.
+    pass_condition: str
+    # Task classes this criterion is evidenced for. Every published result
+    # behind C1 and C2 uses tasks with a determinable answer -- GSM8K,
+    # competition maths, code, factual QA. None covers summarisation quality,
+    # helpfulness or style. Scoring a subjective-task config against them
+    # would be extending the evidence past where it goes.
+    scope: str = "verifiable"
+
+
+CRITERIA: list[Criterion] = [
+    Criterion(
+        id="C1_de_anchoring",
+        title="Judge independence (de-anchoring)",
+        question=(
+            "Does the judge commit to its own answer before it is shown the "
+            "candidate output?"
+        ),
+        why=(
+            "Anchoring on the candidate is the mechanism that turns a judge "
+            "into a plausibility scorer. Independence is the only intervention "
+            "shown to close the basin: committing first drops the "
+            "false-positive rate on wrong answers to 0.012, and lifts "
+            "discrimination from near chance to 0.96 with no reference answer. "
+            "Ensembling fails (a strict three-family ensemble still passes 55% "
+            "of hacked wrong answers, its discrimination collapsing from 0.31 "
+            "to 0.09); stricter rubrics and stronger judges fail.\n\n"
+            "The distinction that matters for scoring: a RECOMPUTE PROMPT also "
+            "fails, leaving the false-positive rate at 0.719. Telling a judge "
+            "to solve the problem itself, in a prompt that already contains "
+            "the candidate, does not de-anchor it. In the paper's words, 'the "
+            "decisive variable is not whether the judge sees the candidate but "
+            "whether it commits an answer of its own first.'"
+        ),
+        citation="Zhou 2026, arXiv:2607.05904, §5.1, §5.4",
+        evidence_required=(
+            "The judge prompt template and the call sequence. A config passes "
+            "only if the candidate is absent from the context at the moment "
+            "the judge produces its own answer. An in-prompt instruction to "
+            "'solve it yourself first' is the failed variant -- record it with "
+            "recompute_variant=true and score fail."
+        ),
+        pass_condition=(
+            "Two-stage evaluation where stage 1 sees the task but not the "
+            "candidate and produces a committed answer, and stage 2 compares "
+            "the candidate against that committed answer. A single-call prompt "
+            "containing both the candidate and a recompute instruction does "
+            "not pass."
+        ),
+    ),
+    Criterion(
+        id="C2_ground_truth_channel",
+        title="Independent ground-truth channel",
+        question=(
+            "Is there any correctness signal independent of the judge, held out "
+            "from whatever process produces or selects outputs?"
+        ),
+        why=(
+            "If the judge is the only instrument, there is nothing that can "
+            "observe the divergence between reported and true quality. The "
+            "hidden-anchor method exists precisely because the judge's own "
+            "score cannot detect its own failure.\n\n"
+            "Reference-free judging is independently measured to be too "
+            "generous: judges accept incorrect answers at rates up to 60% with "
+            "no reference available, decision flip rates from no-reference to "
+            "reference-visible run 9-85%, and judge-human agreement rises from "
+            "0.34-0.74 to 0.85-0.96 once reference information is supplied. "
+            "Almost all flips are the judge withdrawing credit it had granted."
+        ),
+        citation=(
+            "Zhou 2026, arXiv:2607.05904 (hidden-anchor audit design); "
+            "Kranti & Vajjala 2026, arXiv:2607.12885 (reference-free "
+            "over-crediting)"
+        ),
+        evidence_required=(
+            "Presence of a held-out check -- exact-match against a trusted "
+            "source, a test suite not visible to the generator, human "
+            "adjudication on a sample -- and evidence it is not used as a "
+            "selection or training signal."
+        ),
+        pass_condition=(
+            "A correctness signal exists, is independent of the judge, and is "
+            "demonstrably not fed back into generation or selection."
+        ),
+    ),
+    Criterion(
+        id="C3_retrieval_controls",
+        title="Retrieval and contamination controls",
+        question=(
+            "Can a passing result have been retrieved rather than derived?"
+        ),
+        why=(
+            "Scores conflate capability with lookup when the environment "
+            "permits retrieval. Restricting git history and network access "
+            "moved measured resolution rates by 14-21 points on SWE-bench Pro."
+        ),
+        citation=(
+            "Cursor, 'Reward hacking is swamping model intelligence gains', "
+            "25 June 2026; SpecBench, arXiv:2605.21384 (visible vs held-out "
+            "suites in long-horizon coding agents)"
+        ),
+        evidence_required=(
+            "Environment specification for the eval run: network access, "
+            "repository history visibility, and whether task provenance is "
+            "reachable from inside the sandbox."
+        ),
+        pass_condition=(
+            "The eval environment documents and restricts the retrieval paths "
+            "that would let a candidate look up the answer."
+        ),
+        scope="any",
+    ),
+    Criterion(
+        id="C4_degenerate_pass_resistance",
+        title="Resistance to degenerate passes",
+        question=(
+            "Would a solution that special-cases the visible checks be caught?"
+        ),
+        why=(
+            "Automated red-teaming produced working exploits on 10 of 10 "
+            "audited benchmarks and catalogued 219 distinct flaws across eight "
+            "recurring classes. Degenerate passing is the most portable of "
+            "them, and applies to production configs, not only benchmarks.\n\n"
+            "The gap grows with task size: measured pass rates on visible "
+            "versus held-out suites diverge by a further 28 percentage points "
+            "for every tenfold increase in code size. Small single-function "
+            "tasks are therefore the WEAKEST regime in which to demonstrate "
+            "this -- a demo built on them understates the effect, which is the "
+            "safe direction to be wrong in but worth stating."
+        ),
+        citation=(
+            "BenchJack, arXiv:2605.12673 / Berkeley RDI, 'How We Broke Top AI "
+            "Agent Benchmarks', April 2026 (same work; flaw taxonomy V1-V8); "
+            "SpecBench, arXiv:2605.21384"
+        ),
+        evidence_required=(
+            "The check suite itself. Does it use randomised or property-based "
+            "inputs, or only a fixed, enumerable set the candidate can see?"
+        ),
+        pass_condition=(
+            "At least part of the correctness check uses inputs the candidate "
+            "cannot enumerate in advance."
+        ),
+        scope="any",
+    ),
+]
+
+CRITERIA_BY_ID = {c.id: c for c in CRITERIA}
+VERSION = "0.1"
+
+VERDICTS = ("pass", "fail", "not_applicable", "insufficient_evidence")
+
+# A configuration's task class decides which criteria apply to it at all.
+TASK_CLASSES = ("verifiable", "subjective", "mixed")
+
+SCOPE_NOTE = """
+v0.1 applies to evaluators of tasks with a determinable answer.
+
+Every published result behind these criteria uses verifiable tasks: GSM8K and
+competition maths, code, and factual QA. None of them covers summarisation
+quality, helpfulness, tone or style. For a subjective task it is not even
+clear what C1 would mean -- "commit your own answer first" has no obvious
+referent when there is no answer.
+
+So configurations whose task class is `subjective` are scored
+`not_applicable` on C1 and C2 and reported as a separate population. We are
+not claiming those evaluators are sound. We are declining to score them
+against evidence that does not reach them, which is the distinction between
+a standard and a marketing claim.
+
+Criteria for non-verifiable evaluation are the most obvious gap in v0.1 and
+the most useful thing a collaborator could bring.
+"""
+
+
+def applies(criterion_id: str, task_class: str) -> bool:
+    """Whether a criterion is in scope for a configuration's task class."""
+    c = CRITERIA_BY_ID[criterion_id]
+    if c.scope == "any":
+        return True
+    if task_class == "subjective":
+        return False
+    return True

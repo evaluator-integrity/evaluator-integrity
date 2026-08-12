@@ -1,3 +1,38 @@
 {
-  "TODO(port)": "The corpus record schema, ported from the lab harness. One record = one scored evaluator configuration, with its evidence quotes and the package digest they were read from. Do not invent fields here; port the real schema. See README.md in this directory for what a record must carry and which records may live in this repository at all."
+  "config_id": "org-or-framework/what-this-config-is",
+  "source_type": "framework_default_template | framework_documentation_example | public_repo_config | vendor_published_config",
+  "source_url": "permalink, pinned to a commit or a doc version",
+  "task_class": "verifiable | subjective | mixed",
+  "stratum": "framework_default | public_config",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "framework": "deepeval | ragas | promptfoo | openai-evals | custom | ...",
+  "framework_version": "4.1.5",
+  "domain": "coding | finance | legal | health | rag | general",
+  "wedge_adjacent": true,
+  "notes": "One or two sentences on what this configuration is for.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "fail",
+      "evidence": "Quote the prompt template and call sequence. Passing requires a stage that produces the judge's own answer with the candidate ABSENT from context. An in-prompt 'solve it yourself first' instruction is the recompute variant: set recompute_variant true and score fail.",
+      "judgement_call": false,
+      "reasoning": "Required when judgement_call is true.",
+      "recompute_variant": false
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "fail",
+      "evidence": "",
+      "judgement_call": false
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "",
+      "judgement_call": false
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "",
+      "judgement_call": false
+    }
+  }
 }

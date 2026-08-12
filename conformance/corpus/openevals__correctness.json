@@ -1,0 +1,45 @@
+{
+  "config_id": "openevals/correctness",
+  "source_type": "framework_default_template",
+  "source_url": "https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/quality/correctness.py",
+  "artifact": "openevals==0.2.0",
+  "artifact_registry": "pypi",
+  "artifact_path": "openevals/prompts/quality/correctness.py",
+  "artifact_sha256": "e5146d7daa79bbf2e590dbd908b2c512f0d564e144cae3eae40a3bdd54d150be",
+  "evidence_verified": "2026-08-10",
+  "collected": "2026-08-08",
+  "collector": "idil",
+  "task_class": "verifiable",
+  "stratum": "framework_default",
+  "framework": "openevals",
+  "framework_version": "0.2.0",
+  "domain": "general",
+  "wedge_adjacent": true,
+  "notes": "The path LangSmith docs now point to. Notable: LangChain REMOVED the step-by-step instruction present in the classic templates; reasoning is handled by create_llm_as_judge's structured-output comment field instead. No explicit statement anywhere that openevals deprecates the classic evaluators -- the migration is implied by docs emphasis, not declared.",
+  "assessments": {
+    "C1_de_anchoring": {
+      "verdict": "fail",
+      "evidence": "Single call. <input>, <output> and <reference_outputs> are all in one prompt; no reasoning-first or solve-first instruction.",
+      "judgement_call": false,
+      "recompute_variant": false
+    },
+    "C2_ground_truth_channel": {
+      "verdict": "fail",
+      "evidence": "{reference_outputs} is templated but optional at call time, and when present is supplied to the judge.",
+      "judgement_call": true,
+      "reference_supplied": true,
+      "reasoning": "Scored fail even where a reference is supplied. A reference handed to the judge improves the judge -- agreement rises from 0.34-0.74 to 0.85-0.96 (arXiv:2607.12885) -- but it does not create a second instrument. There is still exactly one thing producing the verdict and nothing that could observe it failing. Recorded with reference_supplied so the two populations can be reported separately."
+    },
+    "C3_retrieval_controls": {
+      "verdict": "not_applicable",
+      "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
+      "judgement_call": true,
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+    },
+    "C4_degenerate_pass_resistance": {
+      "verdict": "fail",
+      "evidence": "Scoring is a single pass over a fixed test case. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the judge prompt is public and static.",
+      "judgement_call": false
+    }
+  }
+}
