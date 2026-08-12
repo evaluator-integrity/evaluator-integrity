@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Public-safety pre-commit hook for evaluator-integrity.
+#
+# This hook is the only check that runs *before* the commit object exists. CI
+# runs the same script, but by then a leak is already in history and the cheap
+# fix is gone. That is the whole reason this file exists.
+#
+# It is registered via `core.hooksPath = .githooks`, so it is versioned and
+# reviewable rather than hiding in .git/hooks where nobody can see it. A fresh
+# clone must run:
+#
+#     git config core.hooksPath .githooks
+#
+# See CONTRIBUTING.md.
+
+set -e
+
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "pre-commit: python3 not found; cannot run the public-safety check." >&2
+    echo "Refusing the commit rather than skipping the check." >&2
+    exit 1
+fi
+
+exec python3 "$(git rev-parse --show-toplevel)/scripts/check_public_safe.py" --staged

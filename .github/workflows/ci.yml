@@ -1,0 +1,57 @@
+name: ci
+
+# A repository publishing a standard for evaluation integrity does not ship
+# failing checks. Green here is a precondition for publishing a criteria
+# version, not a nice-to-have.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Tests
+        run: pytest tests/ -q
+
+      # Runs on every push and PR. Note this is the *late* line of defence:
+      # by the time CI sees a leak it is already in history, where deleting it
+      # does not remove it. The pre-commit hook in .githooks/ is the one that
+      # prevents the commit existing. See CONTRIBUTING.md.
+      - name: Public-safety check
+        run: python scripts/check_public_safe.py
+
+      - name: Conformance report
+        run: python -m conformance.report --check
+
+      # The artifact tree is not committed here (it is large, and it contains
+      # non-publishable strata), so this normally skips. It announces the skip
+      # loudly and emits a warning annotation rather than passing quietly --
+      # a run that verified nothing must not look like a run that verified
+      # everything.
+      #
+      # Publishing a criteria version additionally requires this to run for
+      # real, with --require-artifacts, against a local artifact tree.
+      - name: Verify evidence quotes
+        run: python -m conformance.verify_quotes --check
+
+      - name: Verify the pre-commit hook is wired
+        run: |
+          test -x .githooks/pre-commit \
+            || { echo "::error::.githooks/pre-commit is missing or not executable"; exit 1; }

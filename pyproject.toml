@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evaluator-integrity"
+version = "0.1.0"
+description = "Conformance tooling for the Evaluator Integrity criteria"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Idil Gozel", email = "ucapgoz@ucl.ac.uk" },
+]
+keywords = ["evaluation", "llm-judge", "audit", "conformance"]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/idilgozel/evaluator-integrity"
+Source = "https://github.com/idilgozel/evaluator-integrity"
+
+[tool.setuptools]
+# Explicit: conformance/corpus/ holds data, not a subpackage, and auto-discovery
+# would either claim it or refuse to guess.
+packages = ["conformance"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra"

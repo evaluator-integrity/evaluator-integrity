@@ -1,0 +1,29 @@
+# scripts/denylist.txt — literal strings that must never appear in this repository.
+#
+# Read by scripts/check_public_safe.py. One string per line. Matching is
+# case-insensitive substring matching against both file paths and file contents.
+# Blank lines and lines beginning with '#' are ignored.
+#
+# WHAT BELONGS HERE
+#   Names of audit clients and prospects, engagement code names, and any other
+#   term that would identify a specific organisation's evaluator configuration.
+#   Those live in evaluator-integrity-lab and must never reach this repository.
+#
+# WHAT MUST NEVER GO HERE
+#   Anything that is itself secret. This file is committed, and this repository
+#   will be made public — including its full history. A denylist entry is
+#   readable by everyone who reads the repository, forever.
+#
+#   That means: no API keys, no tokens, no passwords, no private URLs, no
+#   unpublished pricing, no personal contact details of third parties.
+#
+#   A secret that has been committed here is not protected by being on the
+#   denylist; it is published by being on the denylist. If a secret has already
+#   been committed, rotate it — deleting the line does not remove it from history.
+#
+# CLIENT NAMES ARE A JUDGEMENT CALL
+#   Adding a client name here makes the *name* public in order to keep the
+#   *engagement* private. That trade is usually wrong. Prefer an opaque code
+#   name that appears nowhere else, and keep the mapping in the lab repository.
+#
+# Seeded empty on purpose. Add entries below this line, one per line.

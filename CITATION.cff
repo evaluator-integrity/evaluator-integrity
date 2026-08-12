@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you cite these criteria, please cite the versioned path (criteria/vX.Y/), not criteria/latest. Published versions are frozen; latest moves."
+title: "Evaluator Integrity Criteria"
+authors:
+  - family-names: Gozel
+    given-names: Idil
+    email: ucapgoz@ucl.ac.uk
+    affiliation: University College London
+version: 0.1.0
+repository-code: "https://github.com/idilgozel/evaluator-integrity"
+license: CC-BY-4.0
+# date-released is deliberately unset. It goes in when v0.1 actually publishes.

@@ -1,0 +1,3 @@
+{
+  "TODO(port)": "The corpus record schema, ported from the lab harness. One record = one scored evaluator configuration, with its evidence quotes and the package digest they were read from. Do not invent fields here; port the real schema. See README.md in this directory for what a record must carry and which records may live in this repository at all."
+}

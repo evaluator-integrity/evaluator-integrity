@@ -1,0 +1,31 @@
+.env
+.env.*
+__pycache__/
+*.pyc
+.venv/
+venv/
+results/
+
+# Test and build artefacts
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Static site output (the site is built from criteria/ in CI, never committed)
+_site/
+.jekyll-cache/
+
+.DS_Store
+
+# Local Claude Code session settings (ad-hoc permission allowlists and similar).
+# Ignored rather than committed: this repository goes public, and a settings
+# file accumulated by one session is noise in a permanent record. If shared
+# project settings are ever wanted, un-ignore this deliberately and review what
+# it contains first.
+.claude/
+
+# NOTE: this file is a tidiness tool, not a safety mechanism. Ignoring a path
+# does not make it safe to have here -- it only hides it from `git status`.
+# Private material is refused by scripts/check_public_safe.py, which
+# deliberately does not treat "ignored" as "cleared".
