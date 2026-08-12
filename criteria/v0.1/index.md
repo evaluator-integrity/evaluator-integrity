@@ -1,3 +1,11 @@
+---
+# This front matter block must stay, even though it is nearly empty. Jekyll
+# copies files without front matter verbatim, which would serve this page as
+# raw markdown instead of rendering it. The layout comes from the `defaults`
+# rule in /_config.yml.
+title: "Evaluator Integrity Criteria v0.1"
+---
+
 # Evaluator Integrity Criteria
 
 **Version 0.1 — provisional. Not yet published.**

@@ -1,0 +1,62 @@
+# Jekyll configuration for the criteria site.
+#
+# Committing this file does NOT publish anything. GitHub Pages is switched off,
+# and turning it on is a separate, deliberate action in repository settings.
+# This lives here so the build config is versioned and reviewable before it is
+# ever live, not so that it goes live.
+#
+# Do not enable Pages until a criteria version is published and frozen. There is
+# currently nothing to serve: v0.1 is a provisional draft.
+#
+# Design note: the site builds from the repository root, so criteria/vX.Y/index.md
+# is rendered in place. The document the world reads and the file the conformance
+# tooling checks are the same bytes. See site/README.md.
+
+title: Evaluator Integrity
+description: Criteria for auditing the evaluators AI teams measure themselves with
+url: https://idilgozel.github.io
+baseurl: /evaluator-integrity
+
+# kramdown honours explicit heading ids written as {#C1}, which is what keeps
+# published anchors stable across markdown -> HTML. Generated slugs are derived
+# from heading text and break every citation when a title is reworded, so the
+# ids are written down rather than computed.
+#
+# Do not change the markdown engine without re-checking every published anchor.
+markdown: kramdown
+kramdown:
+  auto_ids: true          # fallback for headings with no explicit id
+  syntax_highlighter: rouge
+
+# Criteria pages get the layout from here so that a new version directory does
+# not have to remember it. The pages still need front matter -- Jekyll copies
+# files without it verbatim, which would serve the criteria as raw markdown.
+defaults:
+  - scope:
+      path: "criteria"
+    values:
+      layout: default
+
+# Publish the criteria. Nothing else is a page.
+exclude:
+  - conformance
+  - scripts
+  - tests
+  - self-check
+  - site
+  - .githooks
+  - .github
+  - CLAUDE.md
+  - CONTRIBUTING.md
+  - README.md
+  - CITATION.cff
+  - LICENSE
+  - LICENSE-DOCS
+  - pyproject.toml
+  - Gemfile
+  - Gemfile.lock
+
+# No plugins. /criteria/latest is a plain relative-path redirect rather than
+# jekyll-redirect-from, so it survives a move to a custom domain without any
+# path changing. See criteria/latest/index.html.
+plugins: []

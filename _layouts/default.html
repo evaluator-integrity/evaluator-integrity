@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title | default: site.title }}</title>
+<meta name="description" content="{{ site.description }}">
+<!--
+  Deliberately minimal, and deliberately not a theme.
+
+  This document gets printed, archived and quoted into other people's
+  documents. What has to survive that is the text, the version header and the
+  anchor ids -- not a visual identity. A theme would add navigation, branding
+  and a footer to a page whose only job is to be readable and citable.
+
+  No external stylesheet, font or script: the page must render identically
+  offline, from an archive, and in ten years.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 6rem;
+    font: 16px/1.6 Georgia, "Times New Roman", serif;
+    color: #16181d;
+    background: #fff;
+  }
+  h1, h2, h3 { line-height: 1.25; margin: 2.5rem 0 1rem; font-weight: 600; }
+  h1 { margin-top: 0; font-size: 1.75rem; }
+  h2 { font-size: 1.3rem; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.875em; }
+  pre { overflow-x: auto; padding: 0.75rem 1rem; background: #f5f6f8; border-radius: 4px; }
+  a { color: #0b5cad; }
+  hr { border: 0; border-top: 1px solid #d8dbe0; margin: 3rem 0; }
+  /* Heading anchors are the citation surface: make them addressable and
+     visible when linked to, so a reader arriving at #C2 lands somewhere
+     obviously correct. */
+  h2[id], h3[id] { scroll-margin-top: 1rem; }
+  h2[id]:target, h3[id]:target { background: #fff6d6; }
+  @media print {
+    body { max-width: none; color: #000; }
+    a { color: #000; text-decoration: underline; }
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #16181d; color: #e6e8ec; }
+    pre { background: #22252b; }
+    a { color: #7cb7f0; }
+    hr { border-top-color: #363a42; }
+    h2[id]:target, h3[id]:target { background: #3d3413; }
+  }
+</style>
+</head>
+<body>
+<main>
+{{ content }}
+</main>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+  /criteria/latest -> the current criteria version.
+
+  This is the only path in criteria/ whose meaning changes. It is repointed when
+  a new version publishes; the versioned paths it has pointed at never move.
+
+  It is NOT a citable address. Anyone quoting the criteria in a document that
+  needs to stay true should cite the versioned path (criteria/vX.Y/), which is
+  frozen. See criteria/README.md.
+
+  TARGET IS RELATIVE ON PURPOSE. "../v0.1/" resolves correctly under
+  idilgozel.github.io/evaluator-integrity, under a custom domain, and from a
+  local build, with no baseurl interpolation and no plugin. A hardcoded absolute
+  URL would break on the domain move that this hosting choice exists to keep
+  painless.
+
+  Plain HTML rather than jekyll-redirect-from: no plugin dependency, and the
+  file behaves the same whether or not Jekyll ever runs.
+
+  CURRENT TARGET: v0.1 -- PROVISIONAL, NOT YET PUBLISHED.
+  v0.1 is a draft with no frozen text. When it publishes, this stays as is. When
+  v0.2 publishes, change ../v0.1/ to ../v0.2/ in all three places below.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=../v0.1/">
+<link rel="canonical" href="../v0.1/">
+<meta name="robots" content="noindex">
+<title>Evaluator Integrity Criteria — current version</title>
+</head>
+<body>
+<p>Redirecting to the current version of the Evaluator Integrity Criteria.</p>
+<p>If you are not redirected, <a href="../v0.1/">open v0.1</a>.</p>
+<p>
+  Citing the criteria? Use the versioned path, not this one. This path moves
+  when a new version publishes; versioned paths are frozen and always resolve.
+</p>
+</body>
+</html>
