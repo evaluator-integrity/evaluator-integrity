@@ -8,13 +8,13 @@
   "artifact_sha256": "6a55f752162693f8742312ac2a1b88fe6433e6f66d886470ae669e14a855d630",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "mixed",
   "stratum": "framework_default",
   "framework": "promptfoo",
   "framework_version": "0.122.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The default grading assertion. Striking omission: the original task is not in the default prompt at all -- the user message is only '<Output>{{output}}</Output><Rubric>{{rubric}}</Rubric>'. The user must manually inject the question into the rubric text to give the judge the task at all.",
   "assessments": {
     "C1_de_anchoring": {

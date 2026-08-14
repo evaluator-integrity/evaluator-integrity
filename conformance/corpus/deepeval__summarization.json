@@ -8,13 +8,13 @@
   "artifact_sha256": "e4705dd4540177f81e4a90bc02f3e10900587e4738ae9e896e02c28a977dfdaf",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "subjective",
   "stratum": "framework_default",
   "framework": "deepeval",
   "framework_version": "4.1.5",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Seven LLM calls. Steps 3 and 4 genuinely run with the candidate summary ABSENT -- the closest thing to an independent pass in any default here -- but they produce yes/no sufficiency flags, not an answer. And the question generator instructs 'The questions generated should ALWAYS result in a yes based on the given text', so step 4's answers are engineered to be all-yes and carry near-zero information. The independent branch exists and is close to degenerate.",
   "assessments": {
     "C1_de_anchoring": {

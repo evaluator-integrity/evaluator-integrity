@@ -8,13 +8,13 @@
   "artifact_sha256": "255ebb3305934a3c5769ecfd395d5825050a62b3f03f09b5e18647c3f651776d",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "ragas",
   "framework_version": "0.4.3",
   "domain": "rag",
-  "wedge_adjacent": true,
   "notes": "Two calls. The strongest isolation in this stratum: stage 2's input object has exactly two fields, context and statements -- the original question is not in the judging call at all. It is still not de-anchoring, because the judge never answers the question.",
   "assessments": {
     "C1_de_anchoring": {

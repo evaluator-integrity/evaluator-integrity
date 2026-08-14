@@ -8,13 +8,13 @@
   "artifact_sha256": "515ced2aab7e63d4990e2d0b6e433cbf3e01052dda6f3cf5aa7a9dcf3df8f2a8",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "mlflow",
   "framework_version": "3.15.1",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Deprecated since 3.4.0 but still shipping in 3.15.1. Default judge model is hardcoded openai:/gpt-4. THE INVERSE OF EVERY OTHER CONFIG HERE: the template mandates the score BEFORE the justification, and repeats the instruction at both top and bottom, closing with 'Do not add additional new lines. Do not add any other fields.' Reasoning is post-hoc by construction. If reason-then-verdict with the candidate visible is already insufficient, verdict-then-reason is strictly worse, and it is the shipped default of a mainstream MLOps platform.",
   "assessments": {
     "C1_de_anchoring": {

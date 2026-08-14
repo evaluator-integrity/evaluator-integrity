@@ -8,13 +8,13 @@
   "artifact_sha256": "0cf9d814982bac6bc0363bf68b41ccf167d10dfbe4e686df57dc975ef43a2238",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "braintrust-autoevals",
   "framework_version": "0.3.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Braintrust DELETED OpenAI's scoping clause. OpenAI's version says 'your reasoning about the criterion'; Braintrust's template stops dead at 'Does the submission meet the criterion?' and lets the generic COT_SUFFIX supply an UNSCOPED reasoning instruction. Class docstring: 'Evaluate answer correctness using the model's knowledge.' The most exposed of the three: no reference, unscoped reasoning, candidate in context above the criterion.",
   "assessments": {
     "C1_de_anchoring": {

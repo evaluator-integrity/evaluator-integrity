@@ -8,13 +8,13 @@
   "artifact_sha256": "e4705dd4540177f81e4a90bc02f3e10900587e4738ae9e896e02c28a977dfdaf",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "deepeval",
   "framework_version": "4.1.5",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "G-Eval following documented guidance: explicit evaluation_steps, explicit rubric, named judge model, default threshold. This is Config A in the demo -- the configuration the search loop attacks. The stronger reading of the docs was taken at every choice point.",
   "assessments": {
     "C1_de_anchoring": {

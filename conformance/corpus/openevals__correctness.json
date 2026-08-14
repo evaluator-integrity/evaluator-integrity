@@ -8,13 +8,13 @@
   "artifact_sha256": "e5146d7daa79bbf2e590dbd908b2c512f0d564e144cae3eae40a3bdd54d150be",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "openevals",
   "framework_version": "0.2.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The path LangSmith docs now point to. Notable: LangChain REMOVED the step-by-step instruction present in the classic templates; reasoning is handled by create_llm_as_judge's structured-output comment field instead. No explicit statement anywhere that openevals deprecates the classic evaluators -- the migration is implied by docs emphasis, not declared.",
   "assessments": {
     "C1_de_anchoring": {

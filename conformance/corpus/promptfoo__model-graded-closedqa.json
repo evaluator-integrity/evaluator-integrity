@@ -8,13 +8,13 @@
   "artifact_sha256": "6a55f752162693f8742312ac2a1b88fe6433e6f66d886470ae669e14a855d630",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "promptfoo",
   "framework_version": "0.122.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "OPENAI_CLOSED_QA_PROMPT -- inherited from OpenAI evals closedqa. One of the clearest recompute-variant exhibits in the ecosystem.",
   "assessments": {
     "C1_de_anchoring": {

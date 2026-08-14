@@ -8,13 +8,13 @@
   "artifact_sha256": "295a3f3c3ad02511b5dd5378be4bdbb187822111df292f49a25d0f27b076d0f6",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "openai-evals",
   "framework_version": "repo live; hosted Evals platform read-only 31 Oct 2026, shutdown 30 Nov 2026",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The most-copied judge prompt in the ecosystem -- Braintrust Factuality is this file with Mustache variables and scores bolted on. Byte-verified at 1157 bytes. Ships NO eval_type and NO choice_scores, so the A-E letter comes out with no scoring attached and no reasoning instruction appended unless the calling registry entry supplies them: the letter-to-number mapping is not part of the shipped default.",
   "assessments": {
     "C1_de_anchoring": {

@@ -18,8 +18,10 @@ number can no longer be reproduced from the evidence, so a result drifting away
 from its evidence breaks the build rather than sitting there looking
 authoritative.
 
-`--public` is not a courtesy, it is the disclosure policy implemented in code,
-so that publishing the wrong form takes deliberate effort.
+`--public` prints the aggregate form only. In this repository the per-record
+detail is already public, so the flag is not protecting a secret -- it exists
+because the same tool runs over corpora that do include non-publishable strata,
+and the aggregate form is the one that is always safe to quote.
 """
 
 from __future__ import annotations
@@ -30,6 +32,7 @@ import json
 import os
 import sys
 from collections import Counter
+from datetime import date
 
 from conformance.criteria import (CRITERIA, CRITERIA_BY_ID, SCOPE_NOTE,
                                   TASK_CLASSES, VERDICTS, VERSION, applies)
@@ -38,12 +41,13 @@ CORPUS_DIR = "conformance/corpus"
 
 REQUIRED = ("config_id", "source_type", "source_url", "collected",
             "task_class", "stratum", "assessments")
-STRATA = ("framework_default", "public_config")
+# Only the publishable stratum exists in this repository. Other strata are
+# held elsewhere and published as aggregates; scripts/check_public_safe.py
+# refuses a commit containing them, so the validator must not invite one.
+STRATA = ("framework_default",)
 SOURCE_TYPES = (
     "framework_default_template",
     "framework_documentation_example",
-    "public_repo_config",
-    "vendor_published_config",
 )
 
 
@@ -140,6 +144,10 @@ def count_reference_supplied(records: list[dict]) -> tuple[int, int]:
 
 FIGURES_PATH = "conformance/published_figures.json"
 
+# openevals is LangChain's current recommended package; langchain-classic is
+# its predecessor. Same vendor, two packages.
+VENDOR_OF = {"openevals": "langchain", "langchain": "langchain"}
+
 
 def derive_figures(records: list[dict]) -> dict:
     """Every number this project publishes, computed from the corpus alone.
@@ -164,8 +172,49 @@ def derive_figures(records: list[dict]) -> dict:
         "reference_supplied": ref_n,
         "reference_supplied_of": ref_total,
         "framework_default_in_scope": len(fw),
-        "frameworks": sorted({r.get("framework", "?") for r in records}),
+        # Two different quantities, and prose has confused them: nine distinct
+        # packages, eight vendors -- openevals and langchain-classic are both
+        # LangChain. Anything published as "eight frameworks" means vendors.
+        "packages_count": len({r.get("framework", "?") for r in records}),
+        "vendors_count": len({VENDOR_OF.get(r.get("framework", "?"),
+                                            r.get("framework", "?"))
+                              for r in records}),
+        # Leading underscore: inventory, not a published claim, so a rename or
+        # reordering does not fail the build.
+        "_packages": sorted({r.get("framework", "?") for r in records}),
     }
+
+
+# How long evidence may go unverified before CI calls it stale. The artifact
+# tree is not in this repository, so `verify_quotes` skips on most clones. That
+# skip is honest but unbounded: without this, CI would go on cheerfully
+# skipping for years while the records still assert a verification date and
+# vendors ship new bytes underneath them. This converts that silence into a
+# deadline, and fails in the one place it can be acted on.
+EVIDENCE_MAX_AGE_DAYS = 180
+
+
+def check_evidence_freshness(records: list[dict],
+                             today: date | None = None) -> list[str]:
+    today = today or date.today()
+    dated = []
+    for r in records:
+        v = r.get("evidence_verified")
+        if not v:
+            return [f"{r['config_id']}: no evidence_verified date. A record "
+                    f"that cannot say when its evidence was last checked "
+                    f"cannot be trusted to still be evidence."]
+        dated.append((date.fromisoformat(v), r["config_id"]))
+    oldest, who = min(dated)
+    age = (today - oldest).days
+    if age > EVIDENCE_MAX_AGE_DAYS:
+        return [f"evidence is {age} days old (oldest: {who}, verified "
+                f"{oldest.isoformat()}); the limit is {EVIDENCE_MAX_AGE_DAYS}. "
+                f"Rebuild the artifact tree and run "
+                f"`python -m conformance.verify_quotes --require-artifacts`, "
+                f"then update evidence_verified. Do not raise the limit to "
+                f"make this pass."]
+    return []
 
 
 def check_published_figures(records: list[dict]) -> list[str]:
@@ -228,7 +277,8 @@ def main() -> int:
     problems = validate(records)
 
     if args.check:
-        problems = problems + check_published_figures(records)
+        problems = (problems + check_published_figures(records)
+                    + check_evidence_freshness(records))
         if problems:
             print(f"{len(problems)} problem(s):", file=sys.stderr)
             for x in problems:
@@ -236,6 +286,7 @@ def main() -> int:
             return 1
         print(f"corpus ok: {len(records)} records, all criteria scored")
         print("published figures re-derived from the corpus and match")
+        print("evidence dates within the freshness limit")
         return 0
 
     if problems:
@@ -316,7 +367,8 @@ def main() -> int:
         print(SCOPE_NOTE)
 
     if not args.public and records:
-        print("\nPer-config detail (PRIVATE -- do not publish; see Brief v2 §6):")
+        print("\nPer-configuration detail (every record here concerns a public "
+              "template):")
         for r in records:
             fails = [k for k, v in (r.get("assessments") or {}).items()
                      if v.get("verdict") == "fail"]

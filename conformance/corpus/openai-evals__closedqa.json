@@ -8,13 +8,13 @@
   "artifact_sha256": "4b9cc293fa7b261ede7d03e7e71bcb7749c5d350aa464e3cb336be15c3a6b0cb",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "openai-evals",
   "framework_version": "repo live; hosted Evals platform read-only 31 Oct 2026, shutdown 30 Nov 2026",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Byte-verified at 831 bytes, no trailing newline. The ancestor of the LangChain, Braintrust and promptfoo closedqa/criteria prompts. Note it hardcodes its CoT instruction AND sets eval_type: cot_classify, whose ANSWER_PROMPTS entry is a near-duplicate -- a registry entry wiring both would show the judge conflicting output-format instructions twice. PLAUSIBLE, not confirmed: no shipped registry entry wires closedqa end-to-end.",
   "assessments": {
     "C1_de_anchoring": {

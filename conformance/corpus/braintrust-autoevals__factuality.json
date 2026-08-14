@@ -8,13 +8,13 @@
   "artifact_sha256": "9ab5f2c251f821746c7a9aa76672074cf955e5697ad3791b8bba9dc2d8a87efc",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "braintrust-autoevals",
   "framework_version": "0.3.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "OpenAI's fact.yaml with Mustache variables and scores added. Braintrust's contribution is the scoring OpenAI never shipped: A=0.4, B=0.6, C=1, D=0, E=1. Two consequences worth recording: E ('the answers differ, but these differences don't matter from the perspective of factuality') scores a full 1.0 on a self-certified escape hatch with no constraint on what 'doesn't matter' means; and B (correct plus unverified extra claims) scores 0.6 while A (correct but incomplete) scores 0.4 -- the default rewards adding unchecked content over omitting it. Reasoning is a `reasons` field emitted in the SAME generation as `choice`, so reason-then-decide is not structurally guaranteed.",
   "assessments": {
     "C1_de_anchoring": {

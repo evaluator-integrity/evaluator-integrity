@@ -8,13 +8,13 @@
   "artifact_sha256": "1492467f239afe8075609c8a2a4faf2add7dd5c0955bcf87b3910e5ea9d74219",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "subjective",
   "stratum": "framework_default",
   "framework": "braintrust-autoevals",
   "framework_version": "0.3.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Pairwise preference, not solve-then-judge. Three properties of the shipped default worth recording: the expert summary is ALWAYS labelled A and always first, the candidate ALWAYS B, with no randomisation or swap-and-average -- so any position or label bias maps directly and monotonically onto the score. And scoring is binary A=0, B=1, so the only way to score above zero is for the judge to prefer the candidate OVER the human expert summary; a candidate judged merely equal scores 0. 'Summarization quality: 1.0' therefore means something materially different from what a downstream consumer would assume. POSITION BIAS IS A V0.2 CANDIDATE CRITERION for pairwise configs.",
   "assessments": {
     "C1_de_anchoring": {

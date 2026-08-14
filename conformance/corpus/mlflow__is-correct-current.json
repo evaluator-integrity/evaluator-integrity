@@ -8,13 +8,13 @@
   "artifact_sha256": "df71df8d7fc8a80b7d4ac33c6a56f69984c801a894614b4032a9e46440fa7129",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "mlflow",
   "framework_version": "3.15.1",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The current replacement judge. Reframes correctness as entailment: 'You must determine whether the claim is supported by the document in the context of the question. Do not focus on the correctness or completeness of the claim.' Note the document slot is '{{input}} - {{output}}', so the candidate output IS the document being treated as authoritative, while the ground truth occupies the <claim> slot -- the roles are inverted relative to every other config here. Worth a second look before citing.",
   "assessments": {
     "C1_de_anchoring": {

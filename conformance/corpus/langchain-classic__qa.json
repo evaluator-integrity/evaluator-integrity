@@ -8,13 +8,13 @@
   "artifact_sha256": "e94adaa9c56b9ad9099f831fc02903ba99f0c19b6000476f8d4639ca162e3a3a",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "langchain",
   "framework_version": "langchain-classic 1.0.8",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The control case for the CoT question: this template requests NO reasoning at all. The prompt ends at 'GRADE:', so the verdict is the model's first emitted token. Useful contrast -- it is not a recompute variant because it does not attempt independence at all.",
   "assessments": {
     "C1_de_anchoring": {

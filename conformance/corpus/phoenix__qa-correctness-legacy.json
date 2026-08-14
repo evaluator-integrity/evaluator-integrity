@@ -8,13 +8,13 @@
   "artifact_sha256": "5961a59de16f4e39b359579899f1a960a2080391231617d43f1ad453b035ead6",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "arize-phoenix-evals",
   "framework_version": "2.0.0 (absent from 3.3.0)",
   "domain": "rag",
-  "wedge_adjacent": true,
   "notes": "CORRECTION (10 Aug 2026): arize-phoenix-evals 3.3.0 does NOT ship this template at all -- there is no legacy path anywhere in the current wheel. The quote is verified against the 2.0.0 artifact, which is the last version that shipped it. Arize's own docs still display it and label it 'a legacy evaluator from phoenix-evals 1.x', so it is a live documented example but not a shipped default. Treat it as documentation, and say so if it appears in the write-up -- citing it as current would be wrong.",
   "assessments": {
     "C1_de_anchoring": {

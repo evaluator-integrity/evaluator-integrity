@@ -8,13 +8,13 @@
   "artifact_sha256": "6f284d3823fcdd078d2de7fc82cef9d28b18608dcac9a369b2d869803490b8ea",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "ragas",
   "framework_version": "0.4.3",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Three LLM calls plus an embedding call, weighted [0.75, 0.25] factuality vs semantic similarity. Ground truth is handed to the judge, which performs TP/FP/FN set classification -- never derivation.",
   "assessments": {
     "C1_de_anchoring": {

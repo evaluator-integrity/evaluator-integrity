@@ -8,13 +8,13 @@
   "artifact_sha256": "e04c2eedf9a6d4150ce38fe37cae28f65df166c637acfbdcf7eb8d438a7b8cd5",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "ragas",
   "framework_version": "0.4.3",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "REMOVED from the public API in v0.4 -- absent from metrics.collections, reachable only through a deprecation shim, migration guide says 'AspectCritic - Removed'. Recorded because the legacy path still runs and the shipped 'correctness' definition is a bare self-solve. Note the shipped typo 'criterial', useful as a lineage fingerprint.",
   "assessments": {
     "C1_de_anchoring": {

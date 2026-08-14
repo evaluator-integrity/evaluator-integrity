@@ -8,13 +8,13 @@
   "artifact_sha256": "012e0f1e045f7385d17283e107730febc39f1e1bb4e7f5d19680c907359538d3",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "langchain",
   "framework_version": "langchain-classic 1.0.8",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Identical to `criteria` except for an injected [Reference] block. The judge sees the ground truth and the submission simultaneously.",
   "assessments": {
     "C1_de_anchoring": {

@@ -44,7 +44,8 @@ Rebuild the artifact tree from the public registries, then point this at it.
     mkdir -p artifacts && cd artifacts
     for p in ragas==0.4.3 autoevals==0.3.0 langchain-classic==1.0.8 \\
              arize-phoenix-evals==3.3.0 arize-phoenix-evals==2.0.0 \\
-             openevals==0.2.0 mlflow==3.15.1 evals deepeval==4.1.5; do
+             openevals==0.2.0 mlflow==3.15.1 evals==3.0.1.post1 \\
+             deepeval==4.1.5; do
         pip download --no-deps --dest . "$p"
     done
     mkdir -p x
@@ -89,7 +90,13 @@ def announce_skip(artifacts: Path, require: bool) -> int:
 
 def resolve(art, root: str) -> str:
     if art.package.startswith("deepeval"):
-        import deepeval
+        # Read from the installed package rather than the tree. Absence is a
+        # missing artifact, not a crash -- publishing mode should report it in
+        # the same voice as everything else, not a traceback.
+        try:
+            import deepeval
+        except ImportError:
+            return os.path.join(str(root), "__deepeval_not_installed__")
         return os.path.join(os.path.dirname(deepeval.__file__),
                             art.path.split("/", 1)[1])
     top = {"ragas": "ragas", "evals": "evals", "autoevals": "autoevals",
@@ -104,15 +111,14 @@ def resolve(art, root: str) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    # Verification is the default action here. --check is accepted because it is
-    # the invocation CI and criteria/README.md step 3 already use, and because
-    # `conformance.report --check` means the same thing. Dropping it would turn
-    # both documented commands into argparse errors, which exit 2 and read as
-    # "the check failed to run" -- the one outcome this repository must never
-    # confuse with "the check passed".
     p.add_argument("--check", action="store_true",
-                   help="re-verify every evidence quote (the default action; "
-                        "accepted so the documented invocation keeps working)")
+                   help="accepted for symmetry with `report --check` and for "
+                        "the invocations in ci.yml and criteria/README.md. "
+                        "Verification is the default action, so this is a "
+                        "no-op -- but it must remain ACCEPTED: without it "
+                        "those callers exit 2 on an argparse error, which is "
+                        "the 'guard could not run' code and must never be "
+                        "mistaken for a pass.")
     p.add_argument("--artifacts", default=None)
     p.add_argument("--require-artifacts", action="store_true",
                    help="turn a missing artifact tree into a failure; use this "
@@ -135,8 +141,10 @@ def main(argv: list[str] | None = None) -> int:
         path = resolve(art, str(root))
         label = f"{art.package}:{art.path}"
         if not os.path.exists(path):
-            failures.append(f"{label}: artifact not found at {path}. "
-                            f"Run --how to rebuild the tree.")
+            hint = ("deepeval is not installed; `pip install deepeval==4.1.5`"
+                    if "__deepeval_not_installed__" in path
+                    else "Run --how to rebuild the tree.")
+            failures.append(f"{label}: artifact not found. {hint}")
             continue
         raw = open(path, "rb").read()
         checked += 1

@@ -8,13 +8,13 @@
   "artifact_sha256": "e94adaa9c56b9ad9099f831fc02903ba99f0c19b6000476f8d4639ca162e3a3a",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "langchain",
   "framework_version": "langchain-classic 1.0.8",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "Ground-truth-free but context-required; LangSmith maps the dataset `reference` into the `context` slot. Quotable defect: the grading instruction says 'Ignore differences in punctuation and phrasing between the student answer and true answer' -- referencing a 'true answer' that this template never supplies. A copy-paste artefact from the `qa` prompt.",
   "assessments": {
     "C1_de_anchoring": {

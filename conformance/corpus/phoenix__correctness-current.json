@@ -8,13 +8,13 @@
   "artifact_sha256": "437477b069cba50c51305539f1afccbecbb1fdc8649d83d9e3e139e3f52b2623",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "arize-phoenix-evals",
   "framework_version": "arize-phoenix-evals 3.3.0",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The current 3.x evaluator, and structurally the most interesting: the prompt contains NO step-by-step instruction. Reasoning-before-verdict is imposed by JSON SCHEMA FIELD ORDERING -- generate_classification_schema inserts `explanation` before `label` with required=['explanation', 'label']. A structural control rather than a prompt instruction, which is a better engineering pattern applied to the wrong problem: it orders the output tokens, it does not remove the anchor.",
   "assessments": {
     "C1_de_anchoring": {

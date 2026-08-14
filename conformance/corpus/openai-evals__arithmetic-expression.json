@@ -8,13 +8,13 @@
   "artifact_sha256": "c15f72947be21624a08d6af0d6258a756adeb202cac9867e920b29c88cf50296",
   "evidence_verified": "2026-08-10",
   "collected": "2026-08-08",
+  "criteria_version": "0.1",
   "collector": "idil",
   "task_class": "verifiable",
   "stratum": "framework_default",
   "framework": "openai-evals",
   "framework_version": "repo live; hosted Evals platform read-only 31 Oct 2026, shutdown 30 Nov 2026",
   "domain": "general",
-  "wedge_adjacent": true,
   "notes": "The most exposed template found. The judge must recompute the arithmetic itself, with no reference answer, and is told to ignore an explanation that is nonetheless fully in its context window -- an instruction to disregard adversarially-controllable text the model has already read.",
   "assessments": {
     "C1_de_anchoring": {

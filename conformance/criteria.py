@@ -1,7 +1,8 @@
 """Framework v0.1 criteria, in executable form.
 
-Every criterion is externally cited. That is the rule (Brief v2 §7): a short
-cited list is stronger than a long invented one. If you want to add a
+Every criterion is externally cited, and a test enforces it. A short cited list
+is stronger than a long invented one: a criterion we made up is an opinion, and
+this project has no standing to publish opinions as criteria. If you want to add a
 criterion, find the published result that justifies it first. If there isn't
 one, it belongs in a "candidate criteria" file, not here.
 

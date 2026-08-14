@@ -1,36 +1,42 @@
 {
-  "config_id": "org-or-framework/what-this-config-is",
-  "source_type": "framework_default_template | framework_documentation_example | public_repo_config | vendor_published_config",
-  "source_url": "permalink, pinned to a commit or a doc version",
+  "_note": "One record = one scored evaluator configuration. Only stratum 'framework_default' may live in this repository: it describes what a framework ships with by default, which is already public. Records about an individual organisation's own configuration are held elsewhere and published only as aggregates. scripts/check_public_safe.py enforces this and will refuse a commit that breaks it.",
+  "config_id": "framework/what-this-configuration-is",
+  "source_type": "framework_default_template | framework_documentation_example",
+  "source_url": "permalink, pinned to a version",
+  "criteria_version": "0.1",
+  "collected": "YYYY-MM-DD",
+  "collector": "",
+  "artifact": "package==exact.version",
+  "artifact_registry": "pypi | npm",
+  "artifact_path": "path inside the extracted distribution",
+  "artifact_sha256": "sha256 of that file",
+  "evidence_verified": "YYYY-MM-DD",
+  "framework": "",
+  "framework_version": "",
+  "domain": "general | rag | coding | finance | legal | health",
   "task_class": "verifiable | subjective | mixed",
-  "stratum": "framework_default | public_config",
-  "collected": "2026-08-08",
-  "collector": "idil",
-  "framework": "deepeval | ragas | promptfoo | openai-evals | custom | ...",
-  "framework_version": "4.1.5",
-  "domain": "coding | finance | legal | health | rag | general",
-  "wedge_adjacent": true,
-  "notes": "One or two sentences on what this configuration is for.",
+  "stratum": "framework_default",
+  "notes": "",
   "assessments": {
     "C1_de_anchoring": {
-      "verdict": "fail",
-      "evidence": "Quote the prompt template and call sequence. Passing requires a stage that produces the judge's own answer with the candidate ABSENT from context. An in-prompt 'solve it yourself first' instruction is the recompute variant: set recompute_variant true and score fail.",
+      "verdict": "pass | fail | not_applicable | insufficient_evidence",
+      "evidence": "Quote the prompt template and call sequence. Passing requires a stage producing the judge's own answer with the candidate ABSENT from context. An in-prompt 'solve it yourself first' instruction is the recompute variant: set recompute_variant true and score fail.",
       "judgement_call": false,
-      "reasoning": "Required when judgement_call is true.",
       "recompute_variant": false
     },
     "C2_ground_truth_channel": {
-      "verdict": "fail",
+      "verdict": "",
       "evidence": "",
-      "judgement_call": false
+      "judgement_call": false,
+      "reference_supplied": false
     },
     "C3_retrieval_controls": {
-      "verdict": "not_applicable",
+      "verdict": "",
       "evidence": "",
       "judgement_call": false
     },
     "C4_degenerate_pass_resistance": {
-      "verdict": "fail",
+      "verdict": "",
       "evidence": "",
       "judgement_call": false
     }
