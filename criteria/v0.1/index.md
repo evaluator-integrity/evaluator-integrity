@@ -72,11 +72,25 @@ correctness check into a plausibility check. It is the difference between
 
 This is the criterion that matters most, because it is the only intervention
 shown to work. Committing first drops the judge's false-positive rate on wrong
-answers to 0.012 and lifts discrimination from near chance to 0.96 with no
-reference answer available. Ensembling does not close the gap — a strict
-three-family ensemble still passes 55% of hacked wrong answers, its
-discrimination collapsing from 0.31 to 0.09. Nor do stricter rubrics or
-stronger judges.
+answers to 0.012; blind solving, the limiting case of the same independence,
+lifts discrimination from near chance to 0.96 with no reference answer
+available. Ensembling does not close the gap — a strict three-family ensemble
+still passes 55% of hacked wrong answers, its discrimination collapsing from
+0.31 to 0.09. Nor do stricter rubrics or stronger judges.
+
+**How much it helps depends on the task class, and we quote both numbers.** On
+mathematics, commit-first collapses the false-positive rate from 0.719 to 0.012
+and the single-sample gap falls to zero. On code, measured through best-of-N
+selection, the same rule reduces an 8B judge's gap@16 from 0.378 to 0.227 — a
+substantial reduction, but not an elimination. If you evaluate code, expect the
+smaller effect. We would rather say so here than have you discover it.
+
+The fix is also **capability-dependent**. It *"hurts the 1.7B judge, whose own
+committed solutions are mostly wrong"* — 0.588 rising to 0.637 — and helps
+every larger judge, plateauing by 8B. A judge below some threshold can satisfy
+this criterion and measure worse than it would have without it. The threshold
+is not quantified by any result we can cite; see
+[candidate criteria](../candidates.md).
 
 **The distinction that decides most scores.** A *recompute prompt* — telling
 the judge, in a prompt that already contains the candidate, to solve the
@@ -87,14 +101,29 @@ answer of its own first.* Anything less than a genuine commitment produced
 before the candidate enters context is the failed variant, and we record it as
 such.
 
-**Passes if:** evaluation is staged, and the stage that produces the judge's
-own answer does not have the candidate in its context. A single-call prompt
-containing both the candidate and a recompute instruction does not pass.
+**Passes if:** the judge emits its own parseable answer to the task before any
+comparison with the candidate, and acceptance is decided by matching the
+candidate against that committed answer rather than by a holistic score.
+
+The candidate may be visible at the moment of commitment — the source measures
+exactly that configuration, and reports that what removes the anchor is the
+independent commitment, not the candidate's absence. Withholding the candidate
+entirely is the limiting case of the same independence, not the requirement. A
+single-call prompt that instructs the judge to solve the problem first but
+never requires it to emit a parseable answer does not pass.
+
+**On code generation:** the match relation is well defined for tasks with a
+determinable answer and undefined for code, where behavioural equivalence has
+no definition we can cite. A code configuration that commits an answer but
+whose match relation is unspecified is scored `insufficient evidence`, not
+`fail`. This is an open item, not a settled position; see
+[candidate criteria](../candidates.md).
 
 **Evidence required:** the prompt template and the call sequence.
 
 *Source: Zhou, "More Convincing, Not More Correct: Self-Play Reward Hacking of
-Reference-Free LLM Judges", arXiv:2607.05904, §5.1 and §5.4.*
+Reference-Free LLM Judges", arXiv:2607.05904v1, §5.1, §5.2, §5.3 and
+Appendix A.*
 
 ---
 
