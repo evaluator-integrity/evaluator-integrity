@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single call. COT_SUFFIX appended in code, unscoped: 'Answer the question by calling `select_choice` with your reasoning in a step-by-step matter to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.'. With no reference answer and the class explicitly working 'using the model's knowledge', the judge forms its own view of the correct answer -- after reading the submission. Whether it solved independently is unanswerable from the prompt alone, and this ships as a default.",
+      "evidence": "Single call. COT_SUFFIX appended in code, unscoped: 'Answer the question by calling `select_choice` with your reasoning in a step-by-step matter to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.'. With no reference answer and the class explicitly working 'using the model's knowledge', the judge must form its own view of the correct answer -- but nothing requires it to emit that view in parseable form, and acceptance is the select_choice grade rather than a match against a committed answer. This is the recompute variant, and it ships as a default.",
       "judgement_call": false,
       "recompute_variant": true
     },

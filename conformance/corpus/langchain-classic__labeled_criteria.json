@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single call, same instruction as `criteria`: 'First, write out in a step by step manner your reasoning about each criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.', with both [Submission] and [Reference] already in context.",
+      "evidence": "Single call, same instruction as `criteria`: 'First, write out in a step by step manner your reasoning about each criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.'. A reference is supplied under [Reference], but no stage requires the judge to emit a parseable answer of its own, and acceptance remains a holistic judgement rather than a match against a committed answer.",
       "judgement_call": false,
       "recompute_variant": true
     },

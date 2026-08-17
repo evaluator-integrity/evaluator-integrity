@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single system message. '[Submission]: {{completion}}' appears textually ABOVE the instruction 'First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.' -- so the candidate is in context before the first reasoning token is generated. The phrase 'Avoid simply stating the correct answers at the outset' presupposes the grader is working out correct answers, which is the recompute variant measured to leave the false-positive rate at 0.719.",
+      "evidence": "Single system message. Instruction: 'First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.' The phrase presupposes the grader is working out correct answers, but nothing requires it to emit one in parseable form, and acceptance is the holistic verdict rather than a match. This is the recompute variant measured to leave the false-positive rate at 0.719.",
       "judgement_call": false,
       "recompute_variant": true
     },

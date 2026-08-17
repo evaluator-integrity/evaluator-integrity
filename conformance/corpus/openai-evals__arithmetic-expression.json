@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "'Ignore the explanation and check whether the arithmetic expression uses all four numbers exactly once and evaluates to the desired result.' The judge must derive the result itself, with [Submission]: {completion} already in context and no reference to anchor against. This is the recompute variant in its purest shipped form.",
+      "evidence": "'Ignore the explanation and check whether the arithmetic expression uses all four numbers exactly once and evaluates to the desired result.' The judge is instructed to derive the result itself but never to emit it: no parseable committed answer is produced, and acceptance is the judge's holistic check rather than a match. This is the recompute variant in its purest shipped form -- the configuration measured at a 0.719 false-positive rate.",
       "judgement_call": false,
       "recompute_variant": true
     },

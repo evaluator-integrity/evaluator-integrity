@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single call. '[Submission]: {completion}' precedes the instruction 'First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.'. Reasoning is scoped to the criterion rather than to solving the task, but it is generated after the candidate has been read, and 'the correct answers' is ambiguous between the Y/N verdict and the answer to the task.",
+      "evidence": "Single call. Instruction: 'First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.' Reasoning is scoped to the criterion rather than to solving the task, and 'the correct answers' is ambiguous between the Y/N verdict and the answer to the task. Either way, no parseable answer of the judge's own is emitted and acceptance is the holistic verdict, not a match.",
       "judgement_call": false,
       "recompute_variant": true
     },

@@ -22,7 +22,11 @@
       "evidence": "Stage 2 (NLIStatementInput) contains only `context` and `statements`; the question is absent. But the judge is performing entailment against supplied context, never producing its own answer. Isolation of the question is not commitment to an answer.",
       "judgement_call": true,
       "recompute_variant": false,
-      "reasoning": "Notable as the closest ecosystem design to the right shape. Scored fail on the pass condition as written."
+      "reasoning": "Notable as the closest ecosystem design to the right shape. Fails on the operative rule rather than on candidate visibility: stage 2 withholds the question, but withholding is not committing -- no parseable answer of the judge's own is produced, and acceptance is entailment against supplied context rather than a match against a committed answer.",
+      "wording_sensitive": {
+        "criterion": "C1_de_anchoring",
+        "note": "Verdict turns on the operative rule (no parseable committed answer; acceptance is a holistic score), not on candidate visibility. Re-review if C1's pass condition changes."
+      }
     },
     "C2_ground_truth_channel": {
       "verdict": "fail",

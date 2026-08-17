@@ -19,10 +19,10 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single call. Template: 'Evaluate the Input based on the criterial defined. Use only Yes (1) and No (0) as verdict. Criteria Definition: {definition}'. With the shipped correctness definition -- 'Is the submission factually accurate and free from errors?' -- the judge must determine the truth itself, with the candidate already in context and no reference required.",
+      "evidence": "Single call. Template: 'Evaluate the Input based on the criterial defined. Use only Yes (1) and No (0) as verdict. Criteria Definition: {definition}'. With the shipped correctness definition -- 'Is the submission factually accurate and free from errors?' -- the judge must determine the truth itself, but it emits only Yes/No: no parseable answer of its own is produced, and acceptance is that holistic verdict rather than a match against a committed answer.",
       "judgement_call": true,
       "recompute_variant": true,
-      "reasoning": "recompute_variant set on an implicit rather than explicit instruction: there is no 'solve it first' wording, but the criterion cannot be answered without the judge forming its own view, and it forms it after reading the candidate. Flagged as a judgement call."
+      "reasoning": "recompute_variant set on an implicit rather than explicit instruction: there is no 'solve it first' wording, but the criterion cannot be answered without the judge forming its own view, and it is never required to commit that view in parseable form. Flagged as a judgement call."
     },
     "C2_ground_truth_channel": {
       "verdict": "fail",

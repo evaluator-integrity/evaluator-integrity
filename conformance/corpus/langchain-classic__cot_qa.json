@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "The reasoning instruction sits in the preamble, BEFORE the data block -- but the prompt terminates at 'EXPLANATION:', so the model has read QUESTION, CONTEXT and STUDENT ANSWER before emitting a single reasoning token. Instruction: 'Write out in a step by step manner your reasoning to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.' Prompt-ordering is not context-ordering.",
+      "evidence": "Single call terminating at 'EXPLANATION:'. Instruction: 'Write out in a step by step manner your reasoning to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.' The judge emits free-form reasoning and then a grade; it is never required to produce a parseable answer of its own, and acceptance is that holistic grade rather than a match against a committed answer. This is the recompute variant, measured at a 0.719 false-positive rate.",
       "judgement_call": false,
       "recompute_variant": true
     },

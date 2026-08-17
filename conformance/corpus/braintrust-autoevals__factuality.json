@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single call, single user message, no system message. COT_SUFFIX is appended in code (use_cot=True by default): 'Answer the question by calling `select_choice` with your reasoning in a step-by-step matter to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.' -- with {{output}} already in the prompt above it. Note the typo 'in a step-by-step matter', a mutation of OpenAI's 'in a step by step manner' and a usable fingerprint for tracing this lineage.",
+      "evidence": "Single call, single user message, no system message. COT_SUFFIX is appended in code (use_cot=True by default): 'Answer the question by calling `select_choice` with your reasoning in a step-by-step matter to be sure that your conclusion is correct. Avoid simply stating the correct answer at the outset.'. The instruction asks for reasoning, not for a parseable answer of the judge's own, and acceptance is the select_choice grade rather than a match against a committed answer. Note the typo 'in a step-by-step matter', a mutation of OpenAI's 'in a step by step manner' and a usable fingerprint for tracing this lineage.",
       "judgement_call": false,
       "recompute_variant": true
     },

@@ -19,7 +19,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "fail",
-      "evidence": "Single call, single user message; {{input}} and {{output}} both in context throughout. Schema ordering forces explanation before label, but the explanation is still generated with the candidate read. The schema description is 'A brief explanation of your reasoning', which also discourages depth.",
+      "evidence": "Single call, single user message. The output schema forces an explanation field before the label, but an explanation is not a committed answer: nothing parseable is emitted for the judge's own solution, and the label is a holistic verdict rather than a match against one. The schema description is 'A brief explanation of your reasoning', which also discourages depth.",
       "judgement_call": false,
       "recompute_variant": false
     },
