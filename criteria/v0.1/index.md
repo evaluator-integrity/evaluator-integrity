@@ -137,8 +137,7 @@ Appendix A.*
 
 ## C2. Independent ground-truth channel {#C2}
 
-**Is there any correctness signal independent of the judge, held out from
-whatever produces or selects outputs?**
+**Is there any correctness signal independent of the judge?**
 
 If the judge is the only instrument, nothing in the system can observe the
 divergence between reported quality and real quality. This is not

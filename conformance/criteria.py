@@ -130,8 +130,7 @@ CRITERIA: list[Criterion] = [
         id="C2_ground_truth_channel",
         title="Independent ground-truth channel",
         question=(
-            "Is there any correctness signal independent of the judge, held out "
-            "from whatever process produces or selects outputs?"
+            "Is there any correctness signal independent of the judge?"
         ),
         why=(
             "If the judge is the only instrument, there is nothing that can "
