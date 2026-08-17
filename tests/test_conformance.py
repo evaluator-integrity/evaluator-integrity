@@ -43,8 +43,9 @@ def test_scope_is_enforced_not_remembered():
         },
     }
     assert any("out of scope" in p for p in validate([rec]))
-    rec["assessments"]["C1_de_anchoring"]["verdict"] = "not_applicable"
-    rec["assessments"]["C2_ground_truth_channel"]["verdict"] = "not_applicable"
+    for cid in ("C1_de_anchoring", "C2_ground_truth_channel"):
+        rec["assessments"][cid]["verdict"] = "not_applicable"
+        rec["assessments"][cid]["not_applicable_reason"] = "task_class_out_of_scope"
     assert not validate([rec])
 
 
@@ -146,3 +147,105 @@ def test_staleness_check_actually_fires():
 def test_only_the_publishable_stratum_is_accepted():
     from conformance.report import STRATA
     assert STRATA == ("framework_default",)
+
+
+def _probe(**over):
+    rec = {
+        "_file": "probe.json", "config_id": "probe/x",
+        "source_type": "framework_default_template",
+        "source_url": "https://example.invalid", "collected": "2026-08-08",
+        "task_class": "verifiable", "stratum": "framework_default",
+        "assessments": {
+            "C1_de_anchoring": {"verdict": "fail", "evidence": "x", "judgement_call": False},
+            "C2_ground_truth_channel": {"verdict": "fail", "evidence": "x", "judgement_call": False},
+            "C3_retrieval_controls": {"verdict": "not_applicable", "evidence": "x",
+                                      "not_applicable_reason": "harness_scope"},
+            "C4_degenerate_pass_resistance": {"verdict": "fail", "evidence": "x", "judgement_call": False},
+        },
+    }
+    rec.update(over)
+    return rec
+
+
+def test_not_applicable_requires_a_recorded_reason():
+    """'Did not apply' and 'never came up' read the same in an aggregate."""
+    from conformance.report import validate
+    assert not validate([_probe()])
+    rec = _probe()
+    del rec["assessments"]["C3_retrieval_controls"]["not_applicable_reason"]
+    assert any("not_applicable_reason" in p for p in validate([rec]))
+    rec["assessments"]["C3_retrieval_controls"]["not_applicable_reason"] = "because"
+    assert any("not_applicable_reason" in p for p in validate([rec]))
+
+
+def test_a_record_asserting_nothing_does_not_pass():
+    """The wholesale not_applicable hole: four blanks used to validate clean."""
+    from conformance.report import validate
+    rec = _probe()
+    for a in rec["assessments"].values():
+        a["verdict"] = "not_applicable"
+        a["not_applicable_reason"] = "harness_scope"
+    problems = validate([rec])
+    assert any("asserts nothing" in p for p in problems), problems
+
+
+def test_every_not_applicable_in_the_corpus_states_why():
+    from conformance.report import load_corpus, NA_REASONS
+    for r in load_corpus(CORPUS):
+        for cid, a in r["assessments"].items():
+            if a["verdict"] == "not_applicable":
+                assert a.get("not_applicable_reason") in NA_REASONS, \
+                    f"{r['config_id']}/{cid}"
+
+
+def test_never_evaluated_criteria_are_named_as_such():
+    """C3 is n/a on all 27. The report must say so in words, not print a dash."""
+    import contextlib, io, sys
+    import conformance.report as R
+    argv = sys.argv
+    sys.argv = ["report", "--public", "--corpus", CORPUS]
+    try:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            R.main()
+        out = buf.getvalue()
+    finally:
+        sys.argv = argv
+    assert "has not been evaluated by any configuration" in out
+    assert "absence of a finding, not a finding" in out
+    assert "harness_scope" in out
+
+
+def test_wording_sensitive_flags_surface_in_the_report():
+    """A warning in a free-text note is a warning nothing can act on."""
+    import contextlib, io, sys
+    import conformance.report as R
+    from conformance.report import load_corpus
+    flagged = [r["config_id"] for r in load_corpus(CORPUS)
+               for a in r["assessments"].values()
+               if isinstance(a, dict) and a.get("wording_sensitive")]
+    assert flagged, "expected at least one wording_sensitive record"
+
+    def run(*extra):
+        argv = sys.argv
+        sys.argv = ["report", "--corpus", CORPUS, *extra]
+        try:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                R.main()
+            return buf.getvalue()
+        finally:
+            sys.argv = argv
+
+    # Default form carries the identities, so a reviewer knows what to re-read.
+    private = run()
+    assert "Wording-sensitive verdicts" in private
+    for cid in flagged:
+        assert cid in private
+
+    # Public form carries the count and the criterion, never the identity --
+    # the same disclosure rule the rest of the report obeys.
+    public = run("--public")
+    assert "Wording-sensitive verdicts" in public
+    for cid in flagged:
+        assert cid not in public, f"--public leaked {cid!r}"

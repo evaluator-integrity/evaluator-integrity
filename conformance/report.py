@@ -50,6 +50,20 @@ SOURCE_TYPES = (
     "framework_documentation_example",
 )
 
+# Why a criterion did not apply. `not_applicable` on its own conflates two
+# different statements -- "we scoped this out for a stated reason" and "the
+# question never arose" -- and they read identically in an aggregate. The
+# distinction is the one that sent C5 to candidate criteria, so it is recorded
+# rather than remembered.
+NA_REASONS = {
+    "task_class_out_of_scope":
+        "criterion is not evidenced for this configuration's task class",
+    "harness_scope":
+        "criterion attaches to the surrounding harness, not to this component",
+    "precondition_absent":
+        "the property this criterion validates does not exist in this config",
+}
+
 
 def load_corpus(path: str = CORPUS_DIR) -> list[dict]:
     records = []
@@ -105,9 +119,29 @@ def validate(records: list[dict]) -> list[str]:
                 problems.append(
                     f"{f}/{crit_id}: set judgement_call true/false so contested "
                     f"calls can be re-reviewed.")
+            if a.get("verdict") == "not_applicable":
+                reason = a.get("not_applicable_reason")
+                if reason not in NA_REASONS:
+                    problems.append(
+                        f"{f}/{crit_id}: not_applicable needs a "
+                        f"not_applicable_reason from {sorted(NA_REASONS)}. "
+                        f"'Did not apply' and 'never came up' read the same in "
+                        f"an aggregate and are not the same claim.")
         missing = set(CRITERIA_BY_ID) - set(r.get("assessments") or {})
         if missing:
             problems.append(f"{f}: unscored criteria {sorted(missing)}")
+
+        # A record that asserts nothing must not pass silently. Every criterion
+        # not_applicable means the record contributes no verdict to any
+        # population, and that is a decision someone should have to defend
+        # rather than something that slips through as four blanks.
+        verdicts = [(a or {}).get("verdict")
+                    for a in (r.get("assessments") or {}).values()]
+        if verdicts and not any(v in ("pass", "fail") for v in verdicts):
+            problems.append(
+                f"{f}: no criterion is scored pass or fail. A record that "
+                f"asserts nothing is not evidence; either score something or "
+                f"do not carry the record.")
     return problems
 
 
@@ -318,6 +352,69 @@ def main() -> int:
         rate = "  --" if a["conformance_rate"] is None else f"{a['conformance_rate']*100:5.1f}%"
         print(f"{a['title']:<38} {a['pass']:>5} {a['fail']:>5} "
               f"{a['not_applicable']:>5} {a['insufficient_evidence']:>3}  {rate}")
+
+    print()
+    print("Coverage -- how many configurations each criterion was actually "
+          "scored against:")
+    for cid, a in agg.items():
+        n_eval = a["scored"]
+        print(f"  {a['title']:<38} evaluated {n_eval:>2} of {len(records)}")
+    print()
+
+    # A criterion nothing was scored against has produced no finding. Printing
+    # "n/a 27" and a dash reads as "we looked and it did not apply", which is a
+    # different statement and the one a reader will take away.
+    never = [a["title"] for a in agg.values() if a["scored"] == 0]
+    if never:
+        for title in never:
+            print(f"NOTE: {title} has not been evaluated by any configuration "
+                  f"in this corpus.")
+        print(
+            "That is the absence of a finding, not a finding. It must not be\n"
+            "reported as a conformance rate, and a criterion that stays here\n"
+            "across corpora is a criterion that cannot be exercised -- which is\n"
+            "grounds for moving it to candidate criteria, not for publishing a\n"
+            "zero.\n")
+
+    na_reasons: dict[str, Counter] = {}
+    for r in records:
+        for cid, a in (r.get("assessments") or {}).items():
+            if (a or {}).get("verdict") == "not_applicable":
+                na_reasons.setdefault(cid, Counter())[
+                    a.get("not_applicable_reason", "unrecorded")] += 1
+    if na_reasons:
+        print("Why criteria did not apply:")
+        for cid, counts in na_reasons.items():
+            title = CRITERIA_BY_ID[cid].title if cid in CRITERIA_BY_ID else cid
+            for reason, n in counts.most_common():
+                gloss = NA_REASONS.get(reason, "UNRECORDED")
+                print(f"  {title:<38} {n:>2}x  {reason} -- {gloss}")
+        print(
+            "\nThese are scoping judgements with stated grounds, not questions\n"
+            "that never arose. The difference matters: a criterion scoped out\n"
+            "for a recorded reason has been considered and set aside, while a\n"
+            "criterion that could never have been evaluated has told you\n"
+            "nothing and should not appear as though it had.\n")
+
+    wording = [(r["config_id"], cid, a["wording_sensitive"])
+               for r in records
+               for cid, a in (r.get("assessments") or {}).items()
+               if isinstance(a, dict) and a.get("wording_sensitive")]
+    if wording:
+        print("Wording-sensitive verdicts -- re-review these if the named "
+              "criterion's pass condition changes:")
+        if args.public:
+            # Identities are per-config detail and stay out of the public form.
+            # The count and the criterion are the part a reader needs.
+            by_crit = Counter(flag.get("criterion", cid)
+                              for _, cid, flag in wording)
+            for crit, n in by_crit.most_common():
+                print(f"  {n} verdict(s) flagged against {crit}")
+        else:
+            for cfg, cid, flag in wording:
+                print(f"  {cfg} / {flag.get('criterion', cid)}")
+                print(f"      {flag.get('note', '')}")
+        print()
 
     ref_n, ref_total = count_reference_supplied(records)
     if ref_total:

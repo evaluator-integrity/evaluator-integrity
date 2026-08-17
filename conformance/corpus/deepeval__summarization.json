@@ -21,19 +21,22 @@
       "verdict": "not_applicable",
       "evidence": "Summarisation quality; no determinable answer. Out of v0.1 scope.",
       "judgement_call": true,
-      "reasoning": "See SCOPE_NOTE. Worth revisiting in v0.2: the structural pattern here is the right shape, applied to the wrong quantity."
+      "reasoning": "See SCOPE_NOTE. Worth revisiting in v0.2: the structural pattern here is the right shape, applied to the wrong quantity.",
+      "not_applicable_reason": "task_class_out_of_scope"
     },
     "C2_ground_truth_channel": {
       "verdict": "not_applicable",
       "evidence": "Out of v0.1 scope.",
       "judgement_call": true,
-      "reasoning": "See SCOPE_NOTE."
+      "reasoning": "See SCOPE_NOTE.",
+      "not_applicable_reason": "task_class_out_of_scope"
     },
     "C3_retrieval_controls": {
       "verdict": "not_applicable",
       "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
       "judgement_call": true,
-      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly.",
+      "not_applicable_reason": "harness_scope"
     },
     "C4_degenerate_pass_resistance": {
       "verdict": "fail",

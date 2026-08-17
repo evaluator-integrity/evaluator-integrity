@@ -39,7 +39,8 @@
       "verdict": "not_applicable",
       "evidence": "The metric scores a supplied string. The environment that produced the candidate is outside its scope, so this criterion attaches to the surrounding harness.",
       "judgement_call": true,
-      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly."
+      "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly.",
+      "not_applicable_reason": "harness_scope"
     },
     "C4_degenerate_pass_resistance": {
       "verdict": "fail",
