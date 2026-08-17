@@ -68,7 +68,15 @@ def test_every_record_has_artifact_provenance():
 
 
 def test_public_report_never_names_configs():
-    """The disclosure policy, as a test rather than a habit."""
+    """POLICY: conformance/corpus/README.md -- non-publishable strata are
+    "published **as aggregates only**, with no attribution"; and
+    conformance/report.py's own docstring, "--public prints the aggregate form
+    only".
+
+    The disclosure policy as a test rather than a habit. This one caught a real
+    leak: the first version of the wording-sensitive report block printed
+    config identities into --public.
+    """
     import contextlib, io, sys
     import conformance.report as R
     from conformance.report import load_corpus
@@ -199,9 +207,23 @@ def test_every_not_applicable_in_the_corpus_states_why():
 
 
 def test_never_evaluated_criteria_are_named_as_such():
-    """C3 is n/a on all 27. The report must say so in words, not print a dash."""
+    """POLICY: criteria/README.md and the C5 dissolution in candidates.md --
+    a criterion nothing was scored against has produced no finding, and must
+    not be presented as though it had.
+
+    Asserts the structural property, not the wording. An earlier version of
+    this test asserted the exact sentences report.py prints, which is the
+    report agreeing with itself: it would pass on any prose and fail on a typo,
+    telling you nothing about whether the policy held.
+    """
     import contextlib, io, sys
     import conformance.report as R
+    from conformance.report import load_corpus, aggregate
+
+    agg = aggregate(load_corpus(CORPUS))
+    never = [a["title"] for a in agg.values() if a["scored"] == 0]
+    assert never, "expected at least one never-evaluated criterion (C3)"
+
     argv = sys.argv
     sys.argv = ["report", "--public", "--corpus", CORPUS]
     try:
@@ -211,9 +233,25 @@ def test_never_evaluated_criteria_are_named_as_such():
         out = buf.getvalue()
     finally:
         sys.argv = argv
-    assert "has not been evaluated by any configuration" in out
-    assert "absence of a finding, not a finding" in out
-    assert "harness_scope" in out
+
+    for title in never:
+        # Named somewhere other than the aggregate table row.
+        assert out.count(title) >= 2, f"{title} is never called out as unevaluated"
+        # And never given a percentage, which is what a rate would look like.
+        for line in out.splitlines():
+            if title in line and "%" in line:
+                raise AssertionError(
+                    f"{title} was evaluated 0 times but is shown with a rate: {line!r}")
+
+    # Every not_applicable reason present in the corpus is accounted for in the
+    # output, so a reader can tell a scoping judgement from a question that
+    # never arose.
+    reasons = {a.get("not_applicable_reason")
+               for r in load_corpus(CORPUS)
+               for a in r["assessments"].values()
+               if a["verdict"] == "not_applicable"}
+    for reason in reasons:
+        assert reason in out, f"not_applicable_reason {reason!r} not surfaced"
 
 
 def test_wording_sensitive_flags_surface_in_the_report():

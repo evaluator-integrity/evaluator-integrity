@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import stat
 import sys
 from pathlib import Path
@@ -58,20 +59,48 @@ def test_denylist_file_exists_and_loads():
 # ---------------------------------------------------------------------------
 
 
+def _stated_forbidden_dirs() -> set[str]:
+    """The directory names CLAUDE.md's 'Never in this repository' section names.
+
+    Parsed from the policy rather than retyped, so the policy statement is the
+    single source and a test cannot drift away from it silently.
+    """
+    section = (REPO_ROOT / "CLAUDE.md").read_text()
+    section = section.split("## Never in this repository")[1].split("\n##")[0]
+    return set(re.findall(r"`([a-z-]+)/`", section))
+
+
+def test_guard_forbids_exactly_what_the_policy_names():
+    """POLICY: CLAUDE.md, 'Never in this repository'.
+
+    The list existed in three places -- the policy prose, the guard's tuple,
+    and this test -- with nothing checking they agreed. Adding a directory to
+    the policy would have left the guard unchanged and every test still green.
+    """
+    assert _stated_forbidden_dirs() == set(guard.FORBIDDEN_DIR_NAMES), (
+        "CLAUDE.md and scripts/check_public_safe.py disagree about which "
+        "directories are forbidden. The policy is authoritative; update the "
+        "guard."
+    )
+
+
+@pytest.mark.parametrize("name", sorted(guard.FORBIDDEN_DIR_NAMES))
+def test_every_forbidden_directory_is_caught(name):
+    """Derived from the guard's own list, so a new entry is covered on arrival."""
+    findings = guard.check_paths([f"{name}/whatever.md"])
+    assert findings, f"{name}/ should have been refused"
+    assert findings[0].heading == "Private directory"
+
+
 @pytest.mark.parametrize(
     "path",
     [
-        "demo/walkthrough.md",
-        "search/harness_sweep.py",
-        "harness/runner.py",
-        "outreach/emails.md",
-        "strategy/positioning.md",
-        "conformance/corpus-private/acme.json",
+        "conformance/corpus-private/acme.json",  # nested under a real tree
         "notes/strategy/pricing.md",  # nested, not just top level
         "DEMO/index.html",  # case-insensitive
     ],
 )
-def test_forbidden_directories_are_caught(path):
+def test_forbidden_directories_are_caught_at_any_depth_or_case(path):
     findings = guard.check_paths([path])
     assert findings, f"{path} should have been refused"
     assert findings[0].heading == "Private directory"
@@ -278,3 +307,22 @@ def test_pre_commit_hook_runs_the_guard_in_staged_mode():
 def test_ci_runs_the_guard():
     ci = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text()
     assert "scripts/check_public_safe.py" in ci
+
+
+# ---------------------------------------------------------------------------
+# Cross-module agreement
+# ---------------------------------------------------------------------------
+
+
+def test_guard_and_scorer_agree_on_the_publishable_stratum():
+    """POLICY: conformance/corpus/README.md, 'Only `stratum: framework_default`.'
+
+    Two modules decide this independently -- the guard refuses a commit, the
+    scorer validates a record -- and nothing checked they named the same
+    stratum. A divergence would mean the validator accepting exactly what the
+    guard rejects, which teaches a contributor the wrong rule at the point they
+    are trying to follow it.
+    """
+    from conformance.report import STRATA
+
+    assert STRATA == (guard.PUBLISHABLE_STRATUM,)
