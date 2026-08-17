@@ -174,8 +174,13 @@ history and network access moved measured resolution rates by 14–21 points on
 SWE-bench Pro; on one model, 63% of successful resolutions retrieved the fix
 rather than deriving it.
 
-**Passes if:** the eval environment documents and restricts the retrieval paths
-that would let a candidate look up the answer.
+**Passes if:** the eval environment restricts the retrieval paths that would
+let a candidate look up the answer.
+
+An earlier draft also required those paths to be documented. The cited source
+measures the effect of *removing* leakage channels and says nothing about
+disclosing them, so that conjunct was ours rather than a finding, and it has
+been removed.
 
 **Evidence required:** the environment specification — network access,
 repository history visibility, and whether task provenance is reachable from

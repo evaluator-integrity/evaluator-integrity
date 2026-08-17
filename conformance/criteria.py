@@ -182,8 +182,12 @@ CRITERIA: list[Criterion] = [
             "reachable from inside the sandbox."
         ),
         pass_condition=(
-            "The eval environment documents and restricts the retrieval paths "
-            "that would let a candidate look up the answer."
+            "The eval environment restricts the retrieval paths that would let "
+            "a candidate look up the answer. Documentation of those paths was "
+            "an earlier conjunct and has been removed: the cited source "
+            "measures the effect of removing leakage channels and says nothing "
+            "about disclosing them, so requiring disclosure was our addition, "
+            "not a finding."
         ),
         scope="any",
     ),
