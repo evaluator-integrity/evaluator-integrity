@@ -74,8 +74,25 @@ it, not declining to report it.
 
 ## C5 — Audit-channel validation {#C5}
 
-*Held here rather than published, 17 August 2026. Ported from
-`criteria-c5-draft-v1.md`.*
+*Ported from `criteria-c5-draft-v1.md`, 17 August 2026.*
+
+> **Status: dissolved into C2 and C4, not rejected.** Its substance is now
+> live. The negative and positive control structure below is part of C2's
+> evidence requirements; the reachability requirement is part of C4's. A
+> channel or suite offered without that evidence is scored
+> `insufficient evidence`.
+>
+> The draft's own argument is what decided this. C5 makes no new empirical
+> claim — it states a necessary condition for C2 and C4 to be scoreable, and
+> both are already cited. That argument was right about substance and wrong
+> about placement: a necessary condition for a criterion to be scoreable
+> belongs inside that criterion's evidence requirements, not beside it as a
+> fifth criterion. Placed there it needs no departure from the rule that every
+> criterion is externally cited, because it makes no claim of its own.
+>
+> The text below is kept unchanged as the standalone version, because the
+> question of whether it should be a criterion in its own right is live rather
+> than closed. See *What would justify promoting it* at the end.
 
 **Has the independent check been demonstrated to fail implementations that are
 known to be wrong?**
@@ -180,6 +197,30 @@ A predicate also keeps it scoreable. Gated on a verdict, C5 would read
 `not applicable` on all 27 records by construction, since no criterion in this
 corpus passes anything — publishing as "n/a 27" without ever having been
 evaluated once.
+
+### What would justify promoting it
+
+Dissolution is the right placement while audit-channel validation is a
+*condition* on other criteria being meaningful. It would become a criterion in
+its own right if either of these turned up:
+
+**An empirical claim of its own.** A published result measuring how often audit
+channels in the wild are non-discriminating — a rate of held-out suites that
+pass known-incorrect implementations, or of checks that turn out unreachable.
+That would make C5 evidential rather than hygienic, and it would carry its own
+citation instead of borrowing C2's and C4's.
+
+**A verdict that C2 and C4 cannot express between them.** Right now a
+configuration with a broken audit channel scores `insufficient evidence` on the
+criterion whose scoreability the channel underwrites, which locates the problem
+correctly. If a case appears where the channel is demonstrably wrong rather
+than merely unevidenced — a suite stricter than the specification, manufacturing
+divergence from nothing — that is a *finding* about the auditor, not an absence
+of evidence about the evaluator, and neither C2 nor C4 has a verdict for it.
+That asymmetry, described above, is the strongest argument for a separate
+criterion, and it needs a real instance before it earns one.
+
+Until then the substance is enforced and the criterion count stays at four.
 
 ---
 

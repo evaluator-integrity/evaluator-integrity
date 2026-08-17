@@ -33,6 +33,46 @@ version is marked as superseded and stays where it is.
 A dead link and a moved document are the same event to a reader in 2028: the
 cited text is gone.
 
+## Where an uncitable property goes
+
+**Where a property matters but no threshold or pass line can be cited, it
+becomes an evidence requirement, not a pass condition.**
+
+This is policy, and it has a failure on each side of it.
+
+Put an uncitable property in a *pass condition* and you have invented a
+standard. C3 required the eval environment to "document and restrict" its
+retrieval paths; restricting is measured in the cited source, documenting is
+not, and the conjunct was ours. C2 required a correctness signal "demonstrably
+not fed back into generation or selection"; that was uncited, and the paper C2
+cites reports the opposite for its own channel. Both read as though a source
+stood behind them. Neither did, and a reader has no way to tell from the page.
+
+Leave it in *prose* instead and nothing acts on it. A caveat in a rationale
+paragraph is read once and never again; it does not reach the person filling in
+a record, and it cannot fail a build.
+
+The evidence requirement is the position between them. It compels disclosure of
+the thing that matters without asserting a line we cannot defend, and a
+submission lacking it scores `insufficient_evidence` — which says "not shown"
+rather than "failed", and is the honest verdict when the honest answer is that
+nobody has measured it.
+
+Three instances, all live:
+
+- **C1** requires the judge's own solve accuracy on the task distribution.
+  Commit-first is capability-dependent and can make a weak judge worse, but no
+  result fixes the floor. The source states its bound as 1 − solve-acc, so a
+  reader given the number can apply the bound themselves.
+- **C2** requires negative and positive controls showing the correctness signal
+  discriminates. No citable result fixes how many controls suffice.
+- **C4** requires per-check reachability for held-out checks. No citable result
+  fixes what proportion must be reachable.
+
+When you are tempted to write a number into a pass condition, check whether you
+can cite it. If you cannot, the number belongs to the reader, and your job is to
+make them able to compute it.
+
 ## Stable anchors
 
 Each criterion has a permanent anchor id — `#C1`, `#C2`, `#C3`, `#C4` — so a

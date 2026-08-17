@@ -119,7 +119,15 @@ whose match relation is unspecified is scored `insufficient evidence`, not
 `fail`. This is an open item, not a settled position; see
 [candidate criteria](../candidates.md).
 
-**Evidence required:** the prompt template and the call sequence.
+**Evidence required:** the prompt template and the call sequence — and the
+judge's own solve accuracy on the task distribution it is judging.
+
+That last item is a disclosure, not a threshold. We cannot cite a floor, but
+the source states its independence bound in exactly these terms: a genuinely
+independent solver's ceiling is 1 − solve-acc, which is 0.07 for a judge
+solving at 0.93. Given the solve accuracy, you can apply that bound yourself
+and decide whether conformance helps your judge. We would rather report a
+number you can act on than assert a threshold we cannot source.
 
 *Source: Zhou, "More Convincing, Not More Correct: Self-Play Reward Hacking of
 Reference-Free LLM Judges", arXiv:2607.05904v1, §5.1, §5.2, §5.3 and
@@ -156,8 +164,28 @@ neither direction, so feedback status is recorded for each configuration and
 reported as a distribution, and no verdict depends on it. The open question is
 stated in [candidate criteria](../candidates.md).
 
-**Evidence required:** the correctness signal, and the path showing whether the
-judge is the only instrument producing the verdict.
+**Evidence required:** the correctness signal, the path showing whether the
+judge is the only instrument producing the verdict — **and evidence that the
+signal works.**
+
+A channel that passes everything satisfies this criterion in letter while
+carrying no information at all, and it reports exactly what a working channel
+reports when the system under test is genuinely correct: perfect scores, no
+divergence, nothing to see. The two cases are indistinguishable from the
+numbers alone, and only one of them is good news. So the difference has to be
+shown:
+
+- **Negative controls** — deliberately incorrect implementations, each
+  demonstrated to fail the check. At minimum: answers precomputed for the
+  visible cases, suppressed error conditions, and correct-in-the-typical-case
+  failures at the stated domain boundaries.
+- **A positive control** — a known-correct implementation passing the check in
+  full, establishing that it discriminates rather than merely rejects.
+
+A channel offered without this evidence is scored `insufficient evidence`, not
+`pass`. This is a requirement on what must be shown, not a threshold: no citable
+result fixes how many controls suffice, and inventing a number would repeat the
+mistake corrected in C3.
 
 *Sources: Zhou 2026, arXiv:2607.05904 — hidden-anchor audit design. Kranti &
 Vajjala, "LLM Judges Can Be Too Generous When There Is No Reference Answer",
@@ -214,7 +242,21 @@ what fails.
 **Passes if:** at least part of the correctness check uses inputs the candidate
 cannot enumerate in advance.
 
-**Evidence required:** the check suite itself.
+**Evidence required:** the check suite itself — **and reachability, per
+held-out check.**
+
+A held-out check is *reachable* if some known-incorrect implementation fails it
+while passing the entire check set visible to the candidate. An unreachable
+check cannot catch anything the visible checks would not have caught first, so
+it adds no resistance to degenerate passing however carefully it was written.
+Reachability is a property of the two suites as a pair, not of either alone,
+and it is shown by exhibiting the implementation rather than argued from
+inspection.
+
+A held-out suite can therefore be large, careful, and still blind. Counting
+held-out checks measures nothing; counting reachable ones measures the
+resolution of the instrument. A suite offered without per-check reachability is
+scored `insufficient evidence`, not `pass`.
 
 *Sources: BenchJack, arXiv:2605.12673, and Berkeley RDI, "How We Broke Top AI
 Agent Benchmarks", April 2026 — the same work; flaw taxonomy V1–V8. SpecBench,
