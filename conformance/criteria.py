@@ -142,14 +142,22 @@ CRITERIA: list[Criterion] = [
             "over-crediting)"
         ),
         evidence_required=(
-            "Presence of a held-out check -- exact-match against a trusted "
-            "source, a test suite not visible to the generator, human "
-            "adjudication on a sample -- and evidence it is not used as a "
-            "selection or training signal."
+            "The correctness signal -- exact-match against a trusted source, a "
+            "test suite not visible to the generator, human adjudication on a "
+            "sample -- and the path showing whether the judge is the only "
+            "instrument producing the verdict."
         ),
         pass_condition=(
-            "A correctness signal exists, is independent of the judge, and is "
-            "demonstrably not fed back into generation or selection."
+            "A correctness signal exists and is independent of the judge.\n\n"
+            "This deliberately does NOT require the signal to be held out from "
+            "whatever produces or selects outputs. An earlier version did. The "
+            "Goodhart argument for that requirement is intuitive but uncited, "
+            "and the paper cited here reports the opposite for its own "
+            "de-anchored channel -- used as the training reward it stayed "
+            "inflation-proof across self-play. Two iterations at n=128 cannot "
+            "carry a scoring clause in either direction, so feedback status is "
+            "recorded per configuration and reported as a distribution, and no "
+            "verdict depends on it. See criteria/candidates.md."
         ),
     ),
     Criterion(

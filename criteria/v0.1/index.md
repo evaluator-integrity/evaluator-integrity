@@ -144,14 +144,20 @@ from 9% to 85%; and judge–human agreement rises from 0.34–0.74 to 0.85–0.9
 once reference information is supplied. Almost all of those flips are the judge
 withdrawing credit it had already granted.
 
-The held-out requirement is strict. A ground-truth check that is also used to
-select or train against stops being ground truth.
+**Passes if:** a correctness signal exists and is independent of the judge.
 
-**Passes if:** an independent correctness signal exists, and there is evidence
-it is not fed back into generation or selection.
+This criterion does **not** require that the signal be held out from whatever
+produces or selects outputs. An earlier draft did, on the intuition that a
+check you also optimise against stops being a check. That intuition is not
+something we can cite, and the paper cited here reports the opposite for its
+own de-anchored channel: used as the training reward, it stayed inflation-proof
+across self-play. Two iterations at one sample size settle the question in
+neither direction, so feedback status is recorded for each configuration and
+reported as a distribution, and no verdict depends on it. The open question is
+stated in [candidate criteria](../candidates.md).
 
-**Evidence required:** the held-out check, and the data path showing it is not
-a selection signal.
+**Evidence required:** the correctness signal, and the path showing whether the
+judge is the only instrument producing the verdict.
 
 *Sources: Zhou 2026, arXiv:2607.05904 — hidden-anchor audit design. Kranti &
 Vajjala, "LLM Judges Can Be Too Generous When There Is No Reference Answer",
