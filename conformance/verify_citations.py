@@ -178,7 +178,7 @@ def summarise() -> dict:
     }
 
 
-def render(summary: dict) -> None:
+def render(summary: dict, problems: list) -> None:
     print("Citation chain\n")
     for s in SOURCES:
         mark = {"version": "pinned", "date": "dated only", "none": "UNPINNED"}
@@ -188,8 +188,11 @@ def render(summary: dict) -> None:
     print(f"    verified    {summary['verified']}")
     print(f"    unsupported {summary['unsupported']}")
     print(f"    unverified  {summary['unverified']}")
-    print(f"  numerals stated in the criteria: {summary['numerals_stated']}, "
-          f"all declared")
+    undeclared = sum(1 for p in problems if "no entry in the citation "
+                     "ledger" in p)
+    print(f"  numerals stated in the criteria: {summary['numerals_stated']}"
+          + (", all declared" if not undeclared
+             else f", {undeclared} WITH NO RECORDED SOURCE"))
     print()
 
     for c in CLAIMS:
@@ -239,7 +242,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps({**summary, "problems": problems}, indent=2))
     else:
-        render(summary)
+        render(summary, problems)
 
     if problems:
         print(f"\n{len(problems)} PROBLEM(S):\n", file=sys.stderr)

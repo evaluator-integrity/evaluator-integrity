@@ -243,6 +243,34 @@ def test_the_chain_reaches_the_published_markdown():
     assert any("0.4242" in p and "index.md" in p for p in problems), problems
 
 
+def test_the_ledger_summary_does_not_assert_what_it_has_not_checked():
+    """A report line that reads "all declared" whatever the checks found.
+
+    The first version printed it unconditionally. It would have said "all
+    declared" on the run that found an undeclared figure, in a tool whose only
+    job is to say which claims are backed.
+    """
+    import contextlib
+    import dataclasses
+    import io
+
+    from conformance import verify_citations as vc
+    from conformance.criteria import CRITERIA
+
+    bent = [dataclasses.replace(CRITERIA[0], why=CRITERIA[0].why + " 0.4242.")]
+    saved = vc.CRITERIA
+    vc.CRITERIA = bent + list(CRITERIA[1:])
+    try:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            vc.render(vc.summarise(), vc.check())
+    finally:
+        vc.CRITERIA = saved
+    line = next(l for l in buf.getvalue().splitlines() if "numerals stated" in l)
+    assert "all declared" not in line, line
+    assert "NO RECORDED SOURCE" in line, line
+
+
 def test_publishing_mode_refuses_unread_citations():
     """POLICY: criteria/README.md, "Publishing a version" step 3 --
     "evidence that has not been re-verified is not published".
