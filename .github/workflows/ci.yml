@@ -62,6 +62,13 @@ jobs:
       - name: Verify the citation chain
         run: python -m conformance.verify_citations --check
 
+      # Question, pass condition and published prose are one requirement
+      # stated three times. This fails when they stop agreeing -- the defect
+      # that stood in C2 for a while, found by reading rather than by any
+      # check.
+      - name: Check criteria coherence
+        run: python -m conformance.coherence --check
+
       - name: Verify the pre-commit hook is wired
         run: |
           test -x .githooks/pre-commit \

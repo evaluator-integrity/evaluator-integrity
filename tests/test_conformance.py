@@ -175,6 +175,38 @@ def test_editing_a_criterion_away_from_its_evidence_breaks_the_chain():
     assert any("SPAN NOT FOUND" in p for p in problems), problems
 
 
+def test_criteria_are_internally_coherent():
+    """Each criterion's question matches its rendering and its pass condition."""
+    from conformance.coherence import check
+    assert not check()
+
+
+def test_the_coherence_check_fires_on_the_defect_it_was_built_for():
+    """POLICY: commit 809089a -- "the mechanical answer follows separately".
+
+    The pre-809089a C2 question, restored. It asked for a held-out channel that
+    the pass condition twelve lines below explicitly retired. Asserting the
+    check fires on the real text is the only evidence that it does anything;
+    a coherence check on already-coherent criteria passes by construction.
+    """
+    import dataclasses
+
+    from conformance import coherence
+    from conformance.criteria import CRITERIA
+
+    before = ("Is there any correctness signal independent of the judge, held "
+              "out from whatever process produces or selects outputs?")
+    bent = [dataclasses.replace(c, question=before)
+            if c.id == "C2_ground_truth_channel" else c for c in CRITERIA]
+    saved = coherence.CRITERIA
+    coherence.CRITERIA = bent
+    try:
+        problems = coherence.check()
+    finally:
+        coherence.CRITERIA = saved
+    assert any("only to retire it" in p for p in problems), problems
+
+
 def test_the_chain_reaches_the_published_markdown():
     """The markdown is the citation surface, and it says more than the module.
 
