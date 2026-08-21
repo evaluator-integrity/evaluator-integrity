@@ -209,11 +209,17 @@ def published_sections(version: str | None = None) -> dict:
     text = path.read_text()
     out, current, buf = {}, None, []
     for line in text.splitlines():
-        head = re.match(r"#{2,3} .*\{#(C[1-5])\}\s*$", line)
-        if head:
+        # A section ends at the next heading of any kind, not at the next
+        # heading that happens to carry a criterion anchor. C4 is the last
+        # criterion on the page, and the sections after it -- what v0.1 does
+        # not cover, the changelog -- would otherwise be read as part of it.
+        # A figure added there would be attributed to C4, and a supports span
+        # could resolve against text belonging to a different section.
+        if re.match(r"#{1,3} ", line):
             if current:
                 out[current] = "\n".join(buf)
-            current, buf = head.group(1), []
+            head = re.match(r"#{2,3} .*\{#(C[1-5])\}\s*$", line)
+            current, buf = (head.group(1) if head else None), []
             continue
         if current:
             buf.append(line)

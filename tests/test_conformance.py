@@ -175,6 +175,22 @@ def test_editing_a_criterion_away_from_its_evidence_breaks_the_chain():
     assert any("SPAN NOT FOUND" in p for p in problems), problems
 
 
+def test_published_sections_stop_at_the_next_heading():
+    """C4 is last on the page, so a loose splitter hands it the rest of it.
+
+    The sections after C4 -- what v0.1 does not cover, the changelog -- carry
+    anchors of their own but not criterion anchors. Reading a section as
+    running to the next *criterion* heading rather than the next heading of any
+    kind attributes their text, and any figure in it, to C4.
+    """
+    from conformance.citations import published_sections
+    secs = published_sections()
+    assert set(secs) == {"C1", "C2", "C3", "C4"}
+    for anchor, text in secs.items():
+        assert "{#changelog}" not in text, anchor
+        assert "Anything we cannot cite" not in text, anchor
+
+
 def test_criteria_are_internally_coherent():
     """Each criterion's question matches its rendering and its pass condition."""
     from conformance.coherence import check
