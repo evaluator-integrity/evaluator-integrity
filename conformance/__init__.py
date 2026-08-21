@@ -9,7 +9,8 @@ The prose is normative. Where this package and the published criteria text
 disagree, the text wins and the package has a bug.
 """
 
-__all__ = ["criteria", "provenance", "report", "verify_quotes"]
+__all__ = ["citations", "criteria", "provenance", "report",
+           "verify_citations", "verify_quotes"]
 
 # Version of the criteria this package implements. Tracks the criteria
 # directory (criteria/v0.1/), not the Python distribution.

@@ -114,9 +114,18 @@ document that needs to stay true should cite the versioned path.
 
 1. Write `criteria/vX.Y/index.md` with the version, date, and status in the text.
 2. Give each criterion its stable anchor id.
-3. Run the conformance checks against it, including
-   `python -m conformance.verify_quotes --check --require-artifacts` — evidence
-   that has not been re-verified is not published.
+3. Run the conformance checks against it, including both re-verification
+   passes — evidence that has not been re-verified is not published.
+
+       python -m conformance.verify_quotes     --check --require-artifacts
+       python -m conformance.verify_citations  --check --require-sources
+
+   The first re-reads every corpus quote out of the pinned package it cites.
+   The second is the same demand one level up: every quantity the criteria
+   themselves state, read back out of the published result it rests on. Both
+   run in CI in a weaker mode that reports rather than refuses; the
+   `--require-*` flags are what make an unread citation a failure, and this
+   step is the only place they are mandatory.
 4. Add the superseded marker to the previous version. Change nothing else in it.
 5. Repoint `criteria/latest`.
 6. Set `date-released` in `CITATION.cff`.

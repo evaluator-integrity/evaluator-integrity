@@ -51,6 +51,17 @@ jobs:
       - name: Verify evidence quotes
         run: python -m conformance.verify_quotes --check
 
+      # Runs for real on a bare clone: the ledger it checks is in the
+      # repository, not in an artifact tree. It fails on a quantity stated in
+      # the criteria with no recorded source, and on a criterion edited away
+      # from the evidence recorded for it. It does NOT fail on claims nobody
+      # has read back out of the source yet -- those are counted and printed.
+      #
+      # Publishing a criteria version additionally requires
+      # --require-sources, which turns those into failures.
+      - name: Verify the citation chain
+        run: python -m conformance.verify_citations --check
+
       - name: Verify the pre-commit hook is wired
         run: |
           test -x .githooks/pre-commit \
