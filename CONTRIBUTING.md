@@ -94,18 +94,43 @@ pytest tests/ -q
 python scripts/check_public_safe.py
 python -m conformance.report --check
 python -m conformance.verify_quotes --check
+python -m conformance.verify_citations --check
+python -m conformance.coherence --check
 ```
 
 CI runs exactly these on push and pull request, on Python 3.11.
 
-`verify_quotes` skips when the artifact tree is absent, which is the normal case
-here — it says so loudly rather than passing quietly. Publishing a criteria
-version requires running it for real:
+The last three are three levels of the same demand — that a claim names the
+thing it rests on, and still matches it.
+
+`verify_quotes` re-reads every corpus quote out of the pinned package it cites.
+It skips when the artifact tree is absent, which is the normal case here — it
+says so loudly rather than passing quietly.
+
+`verify_citations` makes the same demand of the criteria's own figures: every
+quantity stated in `conformance/criteria.py` or in the published markdown has to
+name the source it came from and the locator inside it. It runs for real on a
+bare clone, because the ledger it checks is in the repository. Most of that
+ledger is currently `unverified` — stated in the criteria, not yet read back out
+of the pinned source — and the command prints how much. **`unverified` is a
+value, not a gap to fill in.** Never invent a quote to clear one; an empty slot
+cannot be cited by mistake and a fabricated quote can.
+
+`coherence` checks that a criterion's question, its pass condition and its
+published prose still state one requirement. C2 spent a while asking for a
+held-out channel its pass condition had retired.
+
+Publishing a criteria version requires the first two for real:
 
 ```bash
 EVALINT_ARTIFACTS=/path/to/artifacts \
   python -m conformance.verify_quotes --check --require-artifacts
+python -m conformance.verify_citations --check --require-sources
 ```
+
+`--require-sources` turns every unverified claim into a failure, so it does not
+pass today. That is the intended behaviour: it is the check that stops a version
+being published while its rationale rests on figures nobody has read back out.
 
 Keep CI green. A project telling other people to take measurement seriously does
 not merge with a red build.

@@ -53,6 +53,16 @@ can obtain the same bytes, not merely the same release. Each judgement quotes
 the text it rests on. `conformance/verify_quotes.py` reads those quotes back out
 of the artifacts and fails on any that no longer match.
 
+The criteria's own figures are held to the same standard, one level up.
+`conformance/citations.py` records every quantity C1–C4 state — in the module
+that scores and in the markdown that gets cited — against the published result
+it came from and the locator inside it, with its status: read back out of the
+source, contradicted by it, or not yet read. `conformance/verify_citations.py`
+prints the ledger and fails the build on a figure that names no source at all.
+
+Most of that ledger is currently unread, and the command says so every time it
+runs. A criteria version cannot be published while that is true.
+
 Only `framework_default` records are published individually: what a framework
 ships with by default, which anybody can already install and read. Scores
 against organisations' own configurations are published as aggregates with no
