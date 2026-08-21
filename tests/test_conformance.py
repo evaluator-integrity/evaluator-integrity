@@ -105,10 +105,99 @@ def test_criteria_module_and_published_doc_agree():
 
 
 def test_every_criterion_is_externally_cited():
-    """The rule the framework rests on: no criterion we invented ourselves."""
+    """POLICY: conformance/criteria.py -- "Every criterion is externally cited".
+
+    This replaces a regex on the shape of the `citation` string. That check
+    passed on "arXiv:0000.00000", and passed on a real citation whose numbers
+    came from somewhere else; it was the degenerate pass C4 describes. The
+    criterion now has to name a source in the registry, and that source has to
+    be pinned.
+    """
+    from conformance.citations import CLAIMS, SOURCES_BY_ID
     from conformance.criteria import CRITERIA
+    from conformance.verify_citations import pinning
     for c in CRITERIA:
-        assert re.search(r"(arXiv:\d|20\d\d)", c.citation), c.id
+        claims = [cl for cl in CLAIMS if cl.criterion_id == c.id]
+        assert claims, f"{c.id}: no entry in the citation ledger"
+        for cl in claims:
+            src = SOURCES_BY_ID[cl.source]
+            assert pinning(src.identifier) != "none", f"{c.id}: {src.id}"
+
+
+def test_citation_chain_holds():
+    """Every quantity in the criteria is tied to a source, and still matches."""
+    from conformance.verify_citations import check
+    assert not check()
+
+
+def test_a_quantity_with_no_source_fails_the_build():
+    """The property the chain exists for, exercised rather than assumed."""
+    import dataclasses
+
+    from conformance import verify_citations
+    from conformance.criteria import CRITERIA
+
+    bent = dataclasses.replace(CRITERIA[0], why=CRITERIA[0].why + " 0.4242.")
+    monkey = [bent] + list(CRITERIA[1:])
+    saved = verify_citations.CRITERIA
+    verify_citations.CRITERIA = monkey
+    try:
+        problems = verify_citations.check()
+    finally:
+        verify_citations.CRITERIA = saved
+    assert any("0.4242" in p for p in problems), problems
+
+
+def test_editing_a_criterion_away_from_its_evidence_breaks_the_chain():
+    """The link that makes the ledger more than a list kept alongside.
+
+    C3's documentation conjunct and C2's held-out clause were both text that
+    drifted off its citation with every check still green. A `supports` span is
+    an exact substring of the criterion, so that drift now fails.
+    """
+    import dataclasses
+
+    from conformance import verify_citations
+    from conformance.citations import CLAIMS
+    from conformance.criteria import CRITERIA_BY_ID
+
+    claim = next(c for c in CLAIMS if c.status == "verified")
+    crit = CRITERIA_BY_ID[claim.criterion_id]
+    text = getattr(crit, claim.field).replace(claim.supports[0], "[rewritten]")
+    bent = dataclasses.replace(crit, **{claim.field: text})
+    saved = dict(verify_citations.CRITERIA_BY_ID)
+    verify_citations.CRITERIA_BY_ID[crit.id] = bent
+    try:
+        problems = verify_citations.check()
+    finally:
+        verify_citations.CRITERIA_BY_ID.clear()
+        verify_citations.CRITERIA_BY_ID.update(saved)
+    assert any("SPAN NOT FOUND" in p for p in problems), problems
+
+
+def test_publishing_mode_refuses_unread_citations():
+    """POLICY: criteria/README.md, "Publishing a version" step 3 --
+    "evidence that has not been re-verified is not published".
+
+    The ledger is mostly unverified today, so this asserts the refusal fires
+    rather than asserting a clean run. When every claim is verified this test
+    is the one that says so, by starting to fail.
+    """
+    from conformance.verify_citations import main
+    assert main(["--require-sources", "--json"]) == 1
+
+
+def test_unsupported_claims_stay_visible():
+    """A claim the source contradicts is a finding against our own text.
+
+    It must not be quietly demoted to "unverified", where it would read as
+    merely unread. The report names it and the count is printed every run.
+    """
+    from conformance.citations import CLAIMS
+    unsupported = [c for c in CLAIMS if c.status == "unsupported"]
+    for c in unsupported:
+        assert c.quote, f"{c.criterion_id}: unsupported with no counter-quote"
+        assert c.note, f"{c.criterion_id}: unsupported with no explanation"
 
 
 def test_published_prose_agrees_with_derived_figures():
