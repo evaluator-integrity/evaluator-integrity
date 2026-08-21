@@ -62,13 +62,22 @@ this plainly beats implying the coverage is total.
 
 from __future__ import annotations
 
+import pathlib
 import re
 from dataclasses import dataclass
 
 from conformance.criteria import CRITERIA_BY_ID
 
-# Fields of a Criterion that may state an externally sourced quantity.
-CITED_FIELDS = ("question", "why", "evidence_required", "pass_condition")
+# Fields of a Criterion that may state an externally sourced quantity, plus
+# `published_text` -- the criterion's section of criteria/vX.Y/index.md.
+#
+# The markdown is not a copy of the module. It is the rendering people cite,
+# and it says things the module does not: C3's "on one model, 63% of successful
+# resolutions retrieved the fix" and C4's 2,900-line compiler are stated only
+# there. A chain that stopped at the module would leave the citation surface
+# itself unchecked, which is the wrong half to cover.
+CITED_FIELDS = ("question", "why", "evidence_required", "pass_condition",
+                "published_text")
 
 STATUSES = ("verified", "unsupported", "unverified")
 
@@ -152,17 +161,72 @@ SOURCES_BY_ID = {s.id: s for s in SOURCES}
 # Tokens that look numeric but address a document rather than measure anything:
 # section numbers, arXiv ids, criterion and taxonomy ids, criteria versions.
 # Stripped before the sweep so the ledger is not asked to source "§5.2".
+_MONTHS = ("January|February|March|April|May|June|July|August|September|"
+           "October|November|December")
 _ADDRESSES = (
     r"§\d+(?:\.\d+)?",
     r"arXiv:\d+\.\d+(?:v\d+)?",
+    rf"\b\d{{1,2}} (?:{_MONTHS}) \d{{4}}\b",   # before the bare-year rule:
+    r"\b(?:19|20)\d\d\b",                      # "14 July 2026" hides a 14
     r"\bC[1-5]\b",
     r"\bv\d+\.\d+\b",
     r"\bV[1-8]\b",
 )
 
 # A quantity as the criteria write it: the numeral plus the unit that makes it
-# readable back, so the ledger reads like the prose it is auditing.
-_NUMERAL = re.compile(r"\d+(?:\.\d+)?(?:%|\s?B\b)?")
+# readable back, so the ledger reads like the prose it is auditing. The
+# comma-grouped form comes first, or "2,900" is swept up as a 2 and a 900.
+_NUMERAL = re.compile(r"\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?(?:%|\s?B\b)?")
+
+
+# The italic source line under each criterion. It is an address, not prose that
+# makes claims, and every figure in it is a date or an identifier.
+_SOURCE_LINE = re.compile(r"^\*Sources?:.*?\*\s*$", re.M | re.S)
+
+
+def normalise(n: str) -> str:
+    """A numeral stripped to the quantity, for comparing across renderings.
+
+    The module writes "9-85%" where the markdown writes "from 9% to 85%", and
+    "1.7B" where a quote writes the same thing. Comparing the rendered forms
+    would report a difference in typography as a missing source.
+    """
+    return n.replace(",", "").rstrip("%").rstrip("B").strip()
+
+
+def published_sections(version: str | None = None) -> dict:
+    """Each criterion's section of the published markdown, keyed by anchor id.
+
+    Only the version this package currently scores against. Frozen versions are
+    not re-checked here: their text cannot change, so a chain over them could
+    only ever break by the ledger moving, and the ledger belongs to the live
+    version.
+    """
+    from conformance import CRITERIA_VERSION
+    version = version or CRITERIA_VERSION
+    path = (pathlib.Path(__file__).resolve().parents[1]
+            / "criteria" / f"v{version}" / "index.md")
+    text = path.read_text()
+    out, current, buf = {}, None, []
+    for line in text.splitlines():
+        head = re.match(r"#{2,3} .*\{#(C[1-5])\}\s*$", line)
+        if head:
+            if current:
+                out[current] = "\n".join(buf)
+            current, buf = head.group(1), []
+            continue
+        if current:
+            buf.append(line)
+    if current:
+        out[current] = "\n".join(buf)
+    return {k: _SOURCE_LINE.sub(" ", v) for k, v in out.items()}
+
+
+def criterion_text(criterion, field: str) -> str:
+    """The span of criteria text a claim's `field` names."""
+    if field == "published_text":
+        return published_sections().get(criterion.id.split("_", 1)[0], "")
+    return getattr(criterion, field)
 
 
 def numerals(text: str) -> set:
@@ -339,7 +403,9 @@ CLAIMS: list[Claim] = [
              "10 audited benchmarks and describes near-perfect scores on "
              "'most of the benchmarks'; its Figure 5 caption says nine. "
              "'10 of 10' reads as one exploit per benchmark, which is a "
-             "stronger claim than either. C4's rationale still says it.",
+             "stronger claim than either. It still stands in both renderings "
+             "-- criteria.py's rationale and criteria/v0.1/index.md -- so a "
+             "reader who cites C4 today cites it.",
     ),
     Claim(
         criterion_id="C4_degenerate_pass_resistance", field="why",
@@ -358,6 +424,33 @@ CLAIMS: list[Claim] = [
         note="The eight labels of Figure 6a, not a contiguous sentence in the "
              "paper. A word-quantity, so the numeral sweep does not reach it "
              "and it is declared here deliberately.",
+    ),
+    # ---- stated only in the published markdown --------------------------
+    # These two are in criteria/v0.1/index.md and in neither the module's
+    # rationale nor its evidence requirements. The module is what scores, so
+    # nothing in the scorer can be checked against them; they reach the reader
+    # anyway, because the markdown is the rendering people cite. That asymmetry
+    # is the reason the chain covers published_text at all.
+    Claim(
+        criterion_id="C3_retrieval_controls", field="published_text",
+        source="cursor2026", locator="", status="unverified",
+        supports=("63% of successful resolutions retrieved the fix",),
+        numbers=("63%",),
+        note="Attributed to Cursor because it shares a sentence with the "
+             "14-21 point SWE-bench Pro figure, which C3 attributes there. "
+             "C3 cites two sources and the markdown does not say which this "
+             "came from, so the attribution is inference from adjacency and "
+             "wants confirming with the figure itself.",
+    ),
+    Claim(
+        criterion_id="C4_degenerate_pass_resistance", field="published_text",
+        source="specbench", locator="", status="unverified",
+        supports=('a 2,900-line "compiler" that memorised test inputs',),
+        numbers=("2,900",),
+        note="Same adjacency argument as C3's 63%: it sits in the sentence "
+             "carrying SpecBench's code-size divergence figure. C4 cites both "
+             "BenchJack and SpecBench and a memorising compiler would sit as "
+             "naturally in either.",
     ),
     Claim(
         criterion_id="C4_degenerate_pass_resistance", field="why",

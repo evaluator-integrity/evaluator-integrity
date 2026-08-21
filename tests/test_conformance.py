@@ -175,6 +175,26 @@ def test_editing_a_criterion_away_from_its_evidence_breaks_the_chain():
     assert any("SPAN NOT FOUND" in p for p in problems), problems
 
 
+def test_the_chain_reaches_the_published_markdown():
+    """The markdown is the citation surface, and it says more than the module.
+
+    C3's "63% of successful resolutions retrieved the fix" and C4's 2,900-line
+    compiler are stated in criteria/v0.1/index.md and in neither the module's
+    rationale nor its evidence requirements. A chain that stopped at the
+    module would leave the rendering people actually quote unchecked.
+    """
+    from conformance import citations, verify_citations
+
+    saved = citations.published_sections
+    citations.published_sections = lambda version=None: {
+        **saved(), "C1": saved()["C1"] + " Measured at 0.4242."}
+    try:
+        problems = verify_citations.check()
+    finally:
+        citations.published_sections = saved
+    assert any("0.4242" in p and "index.md" in p for p in problems), problems
+
+
 def test_publishing_mode_refuses_unread_citations():
     """POLICY: criteria/README.md, "Publishing a version" step 3 --
     "evidence that has not been re-verified is not published".

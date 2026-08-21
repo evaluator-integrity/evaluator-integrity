@@ -45,7 +45,8 @@ import sys
 from collections import Counter
 
 from conformance.citations import (CITED_FIELDS, CLAIMS, SOURCES,
-                                   SOURCES_BY_ID, STATUSES, numerals)
+                                   SOURCES_BY_ID, STATUSES, criterion_text,
+                                   normalise, numerals)
 from conformance.criteria import CRITERIA, CRITERIA_BY_ID
 
 # A source is pinned if its identifier fixes WHICH bytes. An arXiv id with a
@@ -83,7 +84,7 @@ def check() -> list[str]:
         if c.source not in SOURCES_BY_ID:
             problems.append(f"{where}: unknown source {c.source!r}")
 
-        text = getattr(crit, c.field)
+        text = criterion_text(crit, c.field)
 
         if not c.supports:
             problems.append(
@@ -130,26 +131,39 @@ def check() -> list[str]:
                         f"is not evidence for the figure.")
 
     for crit in CRITERIA:
+        # Declared anywhere against this criterion, compared without the
+        # typography. The module and the markdown are two renderings of one
+        # definition -- a test asserts that -- so a figure sourced in one is
+        # sourced. What must not pass is a figure sourced in NEITHER.
+        anywhere = {normalise(n) for c in CLAIMS
+                    if c.criterion_id == crit.id for n in c.numbers}
         for field in CITED_FIELDS:
-            stated = numerals(getattr(crit, field))
-            declared = {n for c in CLAIMS
-                        if c.criterion_id == crit.id and c.field == field
-                        for n in c.numbers}
-            for n in sorted(stated - declared):
+            stated = numerals(criterion_text(crit, field))
+            if field == "published_text":
+                missing = {n for n in stated if normalise(n) not in anywhere}
+            else:
+                declared = {n for c in CLAIMS
+                            if c.criterion_id == crit.id and c.field == field
+                            for n in c.numbers}
+                missing = stated - declared
+            for n in sorted(missing):
+                where = ("criteria/v0.1/index.md" if field == "published_text"
+                         else f"criteria.py {field}")
                 problems.append(
-                    f"{crit.id}/{field}: states {n!r} with no entry in the "
-                    f"citation ledger. Every quantity the criteria state must "
-                    f"name the source it came from, even if nobody has read it "
-                    f"back out yet. Add a Claim -- status 'unverified' is an "
-                    f"honest value.")
+                    f"{crit.id}/{field}: {where} states {n!r} with no entry in "
+                    f"the citation ledger. Every quantity the criteria state "
+                    f"must name the source it came from, even if nobody has "
+                    f"read it back out yet. Add a Claim -- status 'unverified' "
+                    f"is an honest value.")
 
     return problems
 
 
 def summarise() -> dict:
     by_status = Counter(c.status for c in CLAIMS)
-    stated = sum(len(numerals(getattr(c, f)))
-                 for c in CRITERIA for f in CITED_FIELDS)
+    stated = len({(c.id, normalise(n)) for c in CRITERIA
+                  for f in CITED_FIELDS
+                  for n in numerals(criterion_text(c, f))})
     return {
         "claims": len(CLAIMS),
         "verified": by_status["verified"],
