@@ -124,8 +124,10 @@ judge's own solve accuracy on the task distribution it is judging.
 
 That last item is a disclosure, not a threshold. We cannot cite a floor, but
 the source states its independence bound in exactly these terms: a genuinely
-independent solver's ceiling is 1 − solve-acc, which is 0.07 for a judge
-solving at 0.93. Given the solve accuracy, you can apply that bound yourself
+independent solver's ceiling is 1 − solve-acc, and it reports a 0.07 ceiling
+for the setting it audits. (That 0.07 is the ceiling a judge solving at 0.93
+would carry — our illustration, not the source's.) Given the solve accuracy,
+you can apply that bound yourself
 and decide whether conformance helps your judge. We would rather report a
 number you can act on than assert a threshold we cannot source.
 
@@ -148,10 +150,10 @@ Reference-free judging is independently measured to be too generous. Acceptance
 of incorrect answers reaches 60% for the worst judge and dataset pair measured,
 one judge model on one Telugu benchmark, while the same paper finds judges
 reasonably calibrated in English and Arabic;
-decision flip rates between no-reference and reference-visible conditions run
-from 9% to 85%; and judge–human agreement rises from 0.34–0.74 to 0.85–0.96
-once reference information is supplied. Almost all of those flips are the judge
-withdrawing credit it had already granted.
+adding reference information flips the judge's decisions by as much as 85% in
+some settings and, in others, not at all; and judge–human agreement rises from
+0.34–0.74 to 0.85–0.96 once reference information is supplied. Almost all of
+those flips are the judge withdrawing credit it had already granted.
 
 **Passes if:** a correctness signal exists and is independent of the judge.
 
@@ -160,8 +162,10 @@ produces or selects outputs. An earlier draft did, on the intuition that a
 check you also optimise against stops being a check. That intuition is not
 something we can cite, and the paper cited here reports the opposite for its
 own de-anchored channel: used as the training reward, it stayed inflation-proof
-across self-play. Two iterations at one sample size settle the question in
-neither direction, so feedback status is recorded for each configuration and
+across self-play. Five self-play iterations on a 128-item audit subset, three
+seeds and one task family — two iterations is the paper's default elsewhere —
+settle the question in neither direction, so feedback status is recorded for
+each configuration and
 reported as a distribution, and no verdict depends on it. The open question is
 stated in [candidate criteria](../candidates.md).
 

@@ -271,16 +271,44 @@ def test_the_ledger_summary_does_not_assert_what_it_has_not_checked():
     assert "NO RECORDED SOURCE" in line, line
 
 
-def test_publishing_mode_refuses_unread_citations():
+def test_publishing_mode_accepts_every_claim(capsys):
     """POLICY: criteria/README.md, "Publishing a version" step 3 --
     "evidence that has not been re-verified is not published".
 
-    The ledger is mostly unverified today, so this asserts the refusal fires
-    rather than asserting a clean run. When every claim is verified this test
-    is the one that says so, by starting to fail.
+    This test previously asserted the refusal, with a note that it would start
+    failing once every claim was verified. On 25 Aug 2026 it did, all five
+    sources having been read back out, and it now asserts the other side: the
+    gate is open and must stay open. A criterion gaining an unread figure
+    fails here.
     """
     from conformance.verify_citations import main
-    assert main(["--require-sources", "--json"]) == 1
+    assert main(["--require-sources", "--json"]) == 0, capsys.readouterr().out
+
+
+def test_a_figure_of_ours_must_say_so_in_the_criterion_text():
+    """POLICY: conformance/citations.py -- a claim marked `ours` is only honest
+    if the reader can see it, and the reader has only the criterion text.
+
+    The status exists because C1's "0.07 for a judge solving at 0.93" was our
+    arithmetic worn as the source's. Marking it `ours` in the ledger while the
+    text still read as sourced would move the problem rather than fix it.
+    """
+    import dataclasses
+
+    from conformance import verify_citations
+    from conformance.citations import CLAIMS
+
+    i, claim = next((i, c) for i, c in enumerate(CLAIMS) if c.status == "ours")
+    stripped = dataclasses.replace(
+        claim, supports=("0.07 is the ceiling a judge solving at 0.93 would "
+                         "carry",))
+    saved = verify_citations.CLAIMS
+    verify_citations.CLAIMS = CLAIMS[:i] + [stripped] + CLAIMS[i + 1:]
+    try:
+        problems = verify_citations.check()
+    finally:
+        verify_citations.CLAIMS = saved
+    assert any("does not say so" in p for p in problems), problems
 
 
 def test_unsupported_claims_stay_visible():

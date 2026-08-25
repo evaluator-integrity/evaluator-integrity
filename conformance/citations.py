@@ -49,6 +49,14 @@ Status, and why unverified is a value rather than an absence
   * `unverified`  -- stated in the criteria, not yet read back out of the
                      pinned source. No quote, because inventing one is the exact
                      failure this project exists to detect elsewhere.
+  * `ours`        -- a quantity the criteria state that is our own arithmetic
+                     or construction, not a claim about what a source says. It
+                     has no quote and no locator because there is nothing to
+                     quote. The criterion text must SAY it is ours -- the check
+                     looks for that wording in the text, not in this file --
+                     and it passes --require-sources for the same reason it has
+                     no source: it is not asserting one. A figure that cannot
+                     be labelled this way in the text does not get the status.
 
 An empty slot cannot be cited by mistake; an invention can. So an unverified
 claim is recorded as unverified and counted, rather than left out of the ledger
@@ -79,7 +87,12 @@ from conformance.criteria import CRITERIA_BY_ID
 CITED_FIELDS = ("question", "why", "evidence_required", "pass_condition",
                 "published_text")
 
-STATUSES = ("verified", "unsupported", "unverified")
+STATUSES = ("verified", "unsupported", "unverified", "ours")
+
+# Text a criterion must carry for a figure to be recorded as `ours`. The status
+# is only honest if the READER can see it, so it is checked against the
+# criterion text rather than taken on the ledger's word.
+OURS_MARKERS = ("our illustration", "not the source's")
 
 
 @dataclass(frozen=True)
@@ -284,29 +297,27 @@ CLAIMS: list[Claim] = [
     Claim(
         criterion_id="C1_de_anchoring", field="why", source="zhou2026",
         locator="abstract", status="verified",
-        supports=("committing first drops the "
-                  "false-positive rate on wrong answers to 0.012",),
+        supports=("committing first, with the candidate still in view, drops "
+                  "the false-positive rate on wrong answers to 0.012",),
         numbers=("0.012",),
         quote="committing first--candidate still in view--drops it to 0.012",
     ),
     Claim(
         criterion_id="C1_de_anchoring", field="why", source="zhou2026",
-        locator="abstract", status="unsupported",
-        supports=("and lifts "
-                  "discrimination from near chance to 0.96 with no reference "
-                  "answer",),
+        locator="abstract", status="verified",
+        supports=("blind solving, the limiting case of the same "
+                  "independence, lifts discrimination from near chance to "
+                  "0.96 with no reference answer",),
         numbers=("0.96",),
         quote="blind solving lifts discrimination from near chance to 0.96 "
               "with no reference answer",
-        note="MISATTRIBUTED. The criterion reads 0.96 as an effect of "
-             "committing first. The source attributes it to BLIND SOLVING -- "
-             "a different protocol, in the same sentence, immediately after "
-             "the commit-first figure. The distinction is one the criterion "
-             "makes itself: C1's pass condition says candidate visibility is "
-             "not the discriminator and blind solve is 'the limiting case of "
-             "the same independence, not a separate requirement'. Whether "
-             "0.96 carries across from the limiting case to the general one "
-             "is exactly what the criterion may not assume.",
+        note="Was unsupported until 25 Aug 2026: the criterion read 0.96 as an "
+             "effect of committing first, which the source attributes to blind "
+             "solving in the same sentence. Now attributed as the source does. "
+             "The published markdown already had this right, and the module did "
+             "not -- two renderings of one definition disagreeing about which "
+             "arm a headline number belongs to, which is the conflation the "
+             "21 Aug pass condition fix removed from the other half of C1.",
     ),
     Claim(
         criterion_id="C1_de_anchoring", field="why", source="zhou2026",
@@ -387,19 +398,33 @@ CLAIMS: list[Claim] = [
     ),
     Claim(
         criterion_id="C1_de_anchoring", field="evidence_required",
-        source="zhou2026", locator="§4 / abstract", status="unsupported",
+        source="zhou2026", locator="§4", status="verified",
         supports=("a genuinely independent solver's ceiling "
-                  "is 1 - solve-acc, 0.07 for a judge solving at 0.93",),
-        numbers=("1", "0.07", "0.93"),
+                  "is 1 - solve-acc",),
+        numbers=("1",),
         quote="A verdict either commits an answer independently of the "
               "candidate--inheriting the judge-side ceiling 1 - solve-acc",
-        note="THE BOUND IS THE SOURCE'S; THE ILLUSTRATION IS NOT. '1 - "
-             "solve-acc' is stated, and 0.07 appears as a ceiling ('its "
-             "FPR=0.719 against the 0.07 ceiling'). What the source nowhere "
-             "says is that this is 'a judge solving at 0.93'. The pairing "
-             "looks like our own arithmetic (1 - 0.93 = 0.07) presented as "
-             "the source's formulation. It matters because this is the one "
-             "figure C1 hands the reader to compute with.",
+    ),
+    Claim(
+        criterion_id="C1_de_anchoring", field="evidence_required",
+        source="zhou2026", locator="§4", status="verified",
+        supports=("reports a 0.07 ceiling for the setting it "
+                  "audits",),
+        numbers=("0.07",),
+        quote="its FPR=0.719 against the 0.07 ceiling",
+    ),
+    Claim(
+        criterion_id="C1_de_anchoring", field="evidence_required",
+        source="zhou2026", locator="", status="ours",
+        supports=("Our illustration, not the source's: 0.07 is the ceiling a "
+                  "judge solving at 0.93 would carry",),
+        numbers=("0.93",),
+        note="Was unsupported until 25 Aug 2026, when it read as the source's "
+             "own formulation. It is 1 - 0.07, worked backwards by us. The "
+             "arithmetic was never wrong; presenting it as the source's was. "
+             "It stays because this is the one figure C1 hands the reader to "
+             "compute with, and a worked example makes the bound usable -- but "
+             "the text now says whose example it is.",
     ),
 
     # ---- C2 -------------------------------------------------------------
@@ -420,20 +445,20 @@ CLAIMS: list[Claim] = [
     ),
     Claim(
         criterion_id="C2_ground_truth_channel", field="why",
-        source="kranti-vajjala2026", locator="abstract; Table 1",
-        status="unsupported",
-        supports=("decision flip rates from no-reference to "
-                  "reference-visible run 9-85%",),
-        numbers=("9", "85%"),
+        source="kranti-vajjala2026", locator="abstract", status="verified",
+        supports=("flips the judge's decisions by as much as 85% in some "
+                  "settings and not at all in others",),
+        numbers=("85%",),
         quote="adding reference answer information to the prompt flips the "
               "judge model's correct/incorrect decisions by as much as 85% in "
               "some experimental settings",
-        note="THE CEILING IS THE SOURCE'S; THE FLOOR IS NOT. 85% is stated, "
-             "as a maximum ('as much as'), not as the top of a measured "
-             "range. No 9% floor was located, and the paper's own flip-rate "
-             "table contains a delta of 0.00 (Sarvam-105B on Arabic), which "
-             "a stated floor of 9% contradicts. '9-85%' reads as a measured "
-             "spread; the source gives a maximum and a table.",
+        note="Was unsupported until 25 Aug 2026 as '9-85%'. 85% is the "
+             "source's maximum, not the top of a measured range, and no 9% "
+             "floor exists -- the paper's flip-rate table contains a delta of "
+             "0.00 (Sarvam-105B on Arabic), which the invented floor "
+             "contradicted. Stated now as a maximum with the null case beside "
+             "it, which is what the source supports and is also the weaker "
+             "claim.",
     ),
     Claim(
         criterion_id="C2_ground_truth_channel", field="why",
@@ -466,22 +491,24 @@ CLAIMS: list[Claim] = [
     ),
     Claim(
         criterion_id="C2_ground_truth_channel", field="pass_condition",
-        source="zhou2026", locator="§5 Setup; Figure 1 caption",
-        status="unsupported",
-        supports=("Two iterations at n=128 cannot "
-                  "carry a scoring clause in either direction",),
+        source="zhou2026", locator="Figure 1(a) caption; §5 Setup",
+        status="verified",
+        supports=("Five self-play iterations on a "
+                  "128-item audit subset, three seeds, one task family -- two "
+                  "iterations is the paper's default elsewhere",),
         numbers=("128",),
-        quote="we run two iterations and three seeds unless noted",
-        note="CONFLATES TWO DIFFERENT RUNS. Two iterations is the paper's "
-             "DEFAULT ('unless noted'). The n=128 audit subset is the "
-             "exception: Figure 1(a) reports 'Five self-play iterations ... "
-             "(n=128 audit per iteration, three seeds)', and §5 describes the "
-             "capability sweep as 'fixed n=128 audit subset, three seeds; "
-             "five-iteration'. So 'two iterations at n=128' names a run the "
-             "paper does not report. This sentence is load-bearing in the "
-             "cautious direction -- it is the stated reason C2's held-out "
-             "clause was removed rather than inverted -- but a reason for "
-             "caution that misstates the evidence is still misstated.",
+        quote="Five self-play iterations: the judge's pass rate climbs to "
+              "~0.9 and holds while anchor-verified accuracy stays "
+              "statistically flat (n=128 audit per iteration, three seeds; "
+              "thin lines seeds, bold mean)",
+        note="Was unsupported until 25 Aug 2026 as 'two iterations at n=128', "
+             "which conflated the paper's default ('we run two iterations and "
+             "three seeds unless noted') with the n=128 audit, where Figure "
+             "1(a) reports five. The reasoning it carries is unchanged and "
+             "does not depend on which: an experiment this size cannot carry "
+             "a scoring clause in either direction. A reason for caution that "
+             "misstates the evidence is still misstated, which is why it was "
+             "corrected rather than left as close enough.",
     ),
 
     # ---- C3 -------------------------------------------------------------
@@ -542,22 +569,20 @@ CLAIMS: list[Claim] = [
     ),
     Claim(
         criterion_id="C4_degenerate_pass_resistance", field="why",
-        source="benchjack", locator="§4.1; Appendix B", status="unverified",
+        source="benchjack", locator="Figure 2 caption; §4.1",
+        status="verified",
         supports=("across eight "
                   "recurring classes",),
-        note="DOWNGRADED FROM verified 25 Aug 2026, my error. It carried a "
-             "quote reading 'V1 Isolation, V2 Answers in test, V3 RCE, V4 LLM "
-             "judge, V5 Weak match, V6 Logic gaps, V7 Trust untrusted, V8 "
-             "Excess perms' on the strength of criteria/candidates.md's "
-             "rendering of Figure 6a. No such string is in the retrievable "
-             "text of the paper; the labels appear to live inside a figure "
-             "image. The classes ARE eight and ARE named in §4.1 ('V1. "
-             "Isolation failure', 'V2. Answers shipped with the test', 'V3. "
-             "Remote code execution into the evaluator', ...), so the "
-             "criterion's 'eight recurring classes' is sound -- but a quote "
-             "must be read out of the source, and this one was read out of "
-             "our own earlier note. That is the failure this ledger exists to "
-             "catch, and it caught mine.",
+        quote="The eight recurring flaw classes (V1-V8) in our flaw taxonomy, "
+              "covering issues such as trust boundary violation (V7), "
+              "isolation failure (V1), and remote code execution (V3).",
+        note="The quote this row carried until 25 Aug 2026 -- a comma-joined "
+             "list of Figure 6a's abbreviated labels -- is not in the paper. I "
+             "had taken it from criteria/candidates.md's rendering and marked "
+             "the row verified on that. Replaced with Figure 2's caption, "
+             "which states the count and the taxonomy in the paper's own "
+             "words. A word-quantity, so the numeral sweep does not reach it "
+             "and it is declared here deliberately.",
     ),
     # ---- stated only in the published markdown --------------------------
     # These two are in criteria/v0.1/index.md and in neither the module's

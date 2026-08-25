@@ -44,7 +44,8 @@ import json
 import sys
 from collections import Counter
 
-from conformance.citations import (CITED_FIELDS, CLAIMS, SOURCES,
+from conformance.citations import (CITED_FIELDS, CLAIMS, OURS_MARKERS,
+                                   SOURCES,
                                    SOURCES_BY_ID, STATUSES, criterion_text,
                                    normalise, numerals)
 from conformance.criteria import CRITERIA, CRITERIA_BY_ID
@@ -105,7 +106,19 @@ def check() -> list[str]:
                     f"{where}: declares {n!r}, which is no longer stated in "
                     f"{c.field}. The ledger has been left behind by an edit.")
 
-        if c.status == "unverified":
+        if c.status == "ours":
+            if c.quote or c.locator:
+                problems.append(
+                    f"{where}: status 'ours' but a quote or locator is "
+                    f"recorded. The figure is our own; there is nothing in a "
+                    f"source to point at.")
+            if not any(m in " ".join(c.supports).lower() for m in OURS_MARKERS):
+                problems.append(
+                    f"{where}: status 'ours', but the criterion text does not "
+                    f"say so. A figure of ours reads exactly like a sourced "
+                    f"one unless the text marks it, and the reader has only "
+                    f"the text. Say it there, in the span this claim names.")
+        elif c.status == "unverified":
             if c.quote:
                 problems.append(
                     f"{where}: status is unverified but a quote is recorded. "
@@ -169,6 +182,7 @@ def summarise() -> dict:
         "verified": by_status["verified"],
         "unsupported": by_status["unsupported"],
         "unverified": by_status["unverified"],
+        "ours": by_status["ours"],
         "sources": len(SOURCES),
         "numerals_stated": stated,
         "criteria_with_no_verified_claim": sorted(
@@ -188,6 +202,8 @@ def render(summary: dict, problems: list) -> None:
     print(f"    verified    {summary['verified']}")
     print(f"    unsupported {summary['unsupported']}")
     print(f"    unverified  {summary['unverified']}")
+    print(f"    ours        {summary['ours']}  (our own arithmetic, marked as "
+          f"such in the criteria text)")
     undeclared = sum(1 for p in problems if "no entry in the citation "
                      "ledger" in p)
     print(f"  numerals stated in the criteria: {summary['numerals_stated']}"
@@ -231,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.require_sources:
         for c in CLAIMS:
-            if c.status != "verified":
+            if c.status not in ("verified", "ours"):
                 problems.append(
                     f"{c.criterion_id}/{c.field} [{c.source}]: status is "
                     f"{c.status!r}. --require-sources was passed, so a claim "
