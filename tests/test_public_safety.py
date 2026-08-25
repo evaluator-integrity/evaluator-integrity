@@ -273,7 +273,7 @@ def test_guard_and_denylist_are_exempt_from_content_scanning():
 
 
 def test_failure_message_explains_why_not_just_what(capsys):
-    guard.report(guard.check_paths(["strategy/positioning.md"]), staged=True)
+    guard.report(guard.check_paths(["strategy/positioning.md"]), scope="staged")
     output = capsys.readouterr().out
     assert "strategy/positioning.md" in output
     assert "Why this matters" in output
@@ -282,9 +282,71 @@ def test_failure_message_explains_why_not_just_what(capsys):
 
 
 def test_working_tree_failure_warns_that_history_may_be_affected(capsys):
-    guard.report(guard.check_paths(["outreach/emails.md"]), staged=False)
+    guard.report(guard.check_paths(["outreach/emails.md"]), scope="worktree")
     output = capsys.readouterr().out
     assert "history" in output.lower()
+
+
+def test_history_failure_does_not_tell_the_reader_to_delete_the_file(capsys):
+    """POLICY: CLAUDE.md -- "Making this repository public exposes its history,
+    not its current state ... There is no undo."
+
+    The worktree wording ("this material is already in the working tree") is
+    wrong for a history finding and actively misleading: the file may not be
+    in the working tree at all, and deleting it would not help if it were.
+    """
+    guard.report(guard.check_paths(["outreach/emails.md"]), scope="history")
+    output = capsys.readouterr().out
+    assert "already in the working tree" not in output
+    assert "IN HISTORY" in output
+    assert "rewritten" in output.lower()
+
+
+# ---------------------------------------------------------------------------
+# History mode -- the check that still works after a leak is committed
+# ---------------------------------------------------------------------------
+
+
+def test_history_mode_finds_what_the_working_tree_scan_cannot(tmp_path):
+    """A leak committed and then deleted is invisible to every other mode.
+
+    This is the whole reason history mode exists, so it is exercised against a
+    real repository rather than asserted. Without it, --history could scan
+    nothing at all and still report clean.
+    """
+    import subprocess
+
+    repo = tmp_path / "r"
+    repo.mkdir()
+
+    def git(*args):
+        subprocess.run(["git", *args], cwd=repo, check=True,
+                       capture_output=True)
+
+    git("init", "-q")
+    git("config", "user.email", "t@t")
+    git("config", "user.name", "t")
+    (repo / "README.md").write_text("fine\n")
+    git("add", "README.md")
+    git("commit", "-q", "-m", "first")
+
+    leak = repo / "strategy"
+    leak.mkdir()
+    (leak / "pricing.md").write_text("tiers\n")
+    git("add", "strategy/pricing.md")
+    git("commit", "-q", "-m", "plant")
+    git("rm", "-q", "strategy/pricing.md")
+    git("commit", "-q", "-m", "delete again")
+
+    saved = guard.REPO_ROOT
+    guard.REPO_ROOT = repo
+    try:
+        # The leak is gone from the working tree ...
+        assert guard.run(staged=False) == 0
+        # ... and still in history.
+        assert guard.run_history() == 1
+    finally:
+        guard.REPO_ROOT = saved
 
 
 # ---------------------------------------------------------------------------

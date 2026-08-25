@@ -17,6 +17,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The history scan below needs all of it. The default shallow
+          # checkout would leave it scanning one commit and reporting clean.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -36,6 +40,14 @@ jobs:
       # prevents the commit existing. See CONTRIBUTING.md.
       - name: Public-safety check
         run: python scripts/check_public_safe.py
+
+      # Publishing this repository publishes every commit ever made, not the
+      # current state. The working-tree scan above cannot see a file that was
+      # committed and later deleted; this one can, and it is the only check
+      # that still works once a leak is in. It refuses to run on a shallow
+      # clone rather than reporting clean over one commit.
+      - name: Public-safety check (history)
+        run: python scripts/check_public_safe.py --history
 
       - name: Conformance report
         run: python -m conformance.report --check

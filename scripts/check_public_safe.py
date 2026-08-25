@@ -136,6 +136,53 @@ def read_bytes(path: str, staged: bool) -> bytes | None:
         return None
 
 
+def list_history_blobs() -> list[tuple[str, str]]:
+    """Every (blob, path) pair reachable from any ref, deduplicated.
+
+    Making a repository public exposes its HISTORY, not its current state. A
+    file deleted in the next commit is still readable forever by anyone who
+    clones. So the check that matters before going public is this one, and it
+    is the only mode that can still find anything once a leak is committed.
+
+    Scope is every object reachable from every ref, which is what a push
+    publishes. Objects that are unreachable -- orphaned by an amend or a
+    rebase, still sitting in this clone's object store -- are NOT pushed and
+    are not scanned. If history has been rewritten to remove something, verify
+    the rewrite separately; a clean run here does not vouch for what is no
+    longer reachable.
+
+    Deduplicated by (blob, path): the same content at the same path across
+    forty commits is one thing to look at, not forty.
+    """
+    out = _git("rev-list", "--objects", "--all")
+    seen: dict[tuple[str, str], None] = {}
+    for line in out.splitlines():
+        sha, _, path = line.partition(" ")
+        if not path:
+            continue  # a commit or tree, not a blob at a path
+        seen.setdefault((sha, path.strip()), None)
+    return list(seen)
+
+
+def read_blob(sha: str) -> bytes | None:
+    result = subprocess.run(
+        ["git", "cat-file", "blob", sha],
+        cwd=REPO_ROOT,
+        capture_output=True,
+    )
+    return result.stdout if result.returncode == 0 else None
+
+
+def commits_touching(sha: str) -> str:
+    """Where a blob entered history, for triage. Best effort, never fatal."""
+    try:
+        out = _git("log", "--all", "--oneline", "--find-object", sha)
+        lines = [ln for ln in out.splitlines() if ln.strip()]
+        return lines[-1] if lines else ""
+    except RuntimeError:
+        return ""
+
+
 def is_binary(blob: bytes) -> bool:
     return b"\0" in blob[:BINARY_SNIFF_BYTES]
 
@@ -399,7 +446,7 @@ def _wrap(label: str, body: str) -> str:
     )
 
 
-def report(findings: list[Finding], staged: bool) -> None:
+def report(findings: list[Finding], scope: str = "worktree") -> None:
     print()
     print("=" * 74)
     print(" PUBLIC-SAFETY CHECK FAILED")
@@ -434,13 +481,26 @@ def report(findings: list[Finding], staged: bool) -> None:
         print()
 
     print("=" * 74)
-    if staged:
+    if scope == "staged":
         print(
             "Nothing has been committed. Fix the files above and stage them again.\n"
             "\n"
             "Do not pass --no-verify. Do not add an exclusion to this check. The\n"
             "check is not the problem; it is doing the one job it exists to do, and\n"
             "the commit it is refusing is the kind that cannot be taken back."
+        )
+    elif scope == "history":
+        print(
+            "This material is IN HISTORY. It is not enough to delete it now, and\n"
+            "it may not be in the working tree at all -- a file removed years ago\n"
+            "is still readable by anyone who clones.\n"
+            "\n"
+            "    git log --oneline --all --find-object <blob>\n"
+            "\n"
+            "Before this repository is made public, history has to be rewritten to\n"
+            "remove it. If it has already been pushed anywhere public, treat it as\n"
+            "disclosed and rotate anything sensitive. Weakening this check is never\n"
+            "the fix."
         )
     else:
         print(
@@ -458,6 +518,85 @@ def report(findings: list[Finding], staged: bool) -> None:
 
 
 # --------------------------------------------------------------------------
+
+
+def run_history() -> int:
+    try:
+        # A shallow clone has almost no history, and scanning it would report
+        # clean while having looked at nearly nothing. CI checkouts are shallow
+        # by default, so this is the likely case rather than the exotic one,
+        # and it must fail rather than pass quietly -- the same rule
+        # verify_quotes applies to a missing artifact tree.
+        if _git("rev-parse", "--is-shallow-repository").strip() == "true":
+            print("check_public_safe: cannot run --history on a shallow "
+                  "clone.", file=sys.stderr)
+            print(
+                "  Only part of history is present, so a clean result would\n"
+                "  mean nothing. Fetch the full history first:\n"
+                "\n"
+                "      git fetch --unshallow      # or checkout with fetch-depth: 0\n"
+                "\n"
+                "  Treating this as a failure. A guard that could not run must\n"
+                "  never be mistaken for a guard that found nothing.",
+                file=sys.stderr,
+            )
+            return 2
+        terms = load_denylist()
+        blobs = list_history_blobs()
+    except RuntimeError as exc:
+        print(f"check_public_safe: cannot run: {exc}", file=sys.stderr)
+        print(
+            "Treating this as a failure. A guard that could not run must never be\n"
+            "mistaken for a guard that found nothing.",
+            file=sys.stderr,
+        )
+        return 2
+
+    HISTORY_FIX = (
+        "This is in HISTORY. Deleting the file now does not remove it -- anyone "
+        "who clones can still read it at that commit. The only fix is to "
+        "rewrite history before the repository is made public, and to treat "
+        "anything already pushed somewhere public as disclosed."
+    )
+
+    def in_history(f: Finding, sha: str = "") -> Finding:
+        where = commits_touching(sha) if sha else ""
+        return Finding(
+            heading=f.heading,
+            path=(f"{f.path} @ {sha[:10]}" + (f" ({where})" if where else ""))
+                 if sha else f.path,
+            detail=f.detail,
+            why=f.why,
+            fix=HISTORY_FIX,
+        )
+
+    findings: list[Finding] = []
+    # Path checks take the union of every path that has ever existed, so a
+    # directory deleted long ago is still reported.
+    findings.extend(in_history(f)
+                    for f in check_paths(sorted({path for _, path in blobs})))
+
+    for sha, path in blobs:
+        if path in SELF_EXEMPT:
+            continue
+        blob = read_blob(sha)
+        if blob is None:
+            continue
+        text = None if is_binary(blob) else decode(blob)
+        found = list(check_denylist(path, text, terms))
+        if text is not None and is_corpus_record(path):
+            found.extend(check_records(path, text))
+        findings.extend(in_history(f, sha) for f in found)
+
+    if findings:
+        report(findings, scope="history")
+        return 1
+
+    print(f"check_public_safe: {len(blobs)} blob/path pairs scanned across all "
+          f"reachable history; clean.")
+    print("  Scope is every object reachable from every ref -- what a push "
+          "publishes. Unreachable objects are not scanned.")
+    return 0
 
 
 def run(staged: bool) -> int:
@@ -492,7 +631,7 @@ def run(staged: bool) -> int:
             findings.extend(check_records(path, text))
 
     if findings:
-        report(findings, staged)
+        report(findings, "staged" if staged else "worktree")
         return 1
 
     scope = "staged changes" if staged else "working tree"
@@ -509,7 +648,18 @@ def main() -> int:
         action="store_true",
         help="scan staged content instead of the working tree (pre-commit hook mode)",
     )
+    parser.add_argument(
+        "--history",
+        action="store_true",
+        help="scan every blob reachable from every ref, not just the current "
+             "state. Making a repository public exposes its history; run this "
+             "before doing so.",
+    )
     args = parser.parse_args()
+    if args.history and args.staged:
+        parser.error("--history and --staged are different scopes; pick one.")
+    if args.history:
+        return run_history()
     return run(staged=args.staged)
 
 
