@@ -144,8 +144,10 @@ divergence between reported quality and real quality. This is not
 hypothetical: the divergence is only visible in the published results *because*
 the researchers built a held-out channel to see it with.
 
-Reference-free judging is independently measured to be too generous. Judges
-accept incorrect answers at rates up to 60% when no reference is available;
+Reference-free judging is independently measured to be too generous. Acceptance
+of incorrect answers reaches 60% for the worst judge and dataset pair measured,
+one judge model on one Telugu benchmark, while the same paper finds judges
+reasonably calibrated in English and Arabic;
 decision flip rates between no-reference and reference-visible conditions run
 from 9% to 85%; and judge–human agreement rises from 0.34–0.74 to 0.85–0.96
 once reference information is supplied. Almost all of those flips are the judge
@@ -197,9 +199,10 @@ arXiv:2607.12885, 14 July 2026.*
 **Can a passing result have been retrieved rather than derived?**
 
 An evaluation that permits lookup measures lookup. Restricting repository
-history and network access moved measured resolution rates by 14–21 points on
-SWE-bench Pro; on one model, 63% of successful resolutions retrieved the fix
-rather than deriving it.
+history and network access moved measured resolution rates by up to 20.7 points
+on SWE-bench Pro, and the effect is model-dependent: 14.1 and 20.7 points on two
+models, under 1 point on a third in the same experiment. On one model,
+63% of successful resolutions retrieved the fix rather than deriving it.
 
 **Passes if:** the eval environment restricts the retrieval paths that would
 let a candidate look up the answer.
@@ -222,14 +225,17 @@ inside the sandbox.
 
 **Would a solution that special-cases the visible checks be caught?**
 
-Automated red-teaming produced working exploits on 10 of 10 audited benchmarks
-and catalogued 219 distinct flaws across eight recurring classes. Degenerate
+Automated red-teaming of 10 popular agent benchmarks catalogued 219 distinct
+flaws across eight recurring classes and produced 10 working exploits, with
+nine benchmarks hacked on almost all instances. Degenerate
 passing — satisfying the checks by a route that does not generalise — is the
 most portable of those classes and the one that transfers from benchmarks to
 production configurations.
 
-The effect grows with task size: visible and held-out pass rates diverge by a
-further 28 percentage points for every tenfold increase in code size, with
+The effect grows with task size: the 90th-percentile gap between visible and
+held-out pass rates grows by approximately 27 percentage points for every
+tenfold increase in code size (a weak fit, R² = 0.21; the paper's abstract
+rounds it to 28), with
 documented cases including a 2,900-line "compiler" that memorised test inputs.
 Evaluations of small, single-function tasks are the regime where this is
 hardest to see, not the regime where it is absent.
