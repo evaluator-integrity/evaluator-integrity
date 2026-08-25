@@ -352,6 +352,26 @@ def test_published_prose_agrees_with_derived_figures():
                 f"prose is now false, or the claim was never checked.")
 
 
+def test_citable_anchors_sit_where_kramdown_will_render_them():
+    """POLICY: site/README.md -- "An anchor that only exists in the markdown
+    source is not a citable anchor."
+
+    A PROXY, and the docstring says so. The real check is rendering the page
+    and reading the HTML, which needs Ruby and is not in this suite; it was run
+    by hand before v0.1 published and all four ids came out as <h2 id="Cn">.
+    What this asserts is the condition under which kramdown emits the id at
+    all: the {#Cn} must terminate a heading line. Written anywhere else -- a
+    paragraph, a wrapped heading -- it renders as literal text and the citation
+    surface silently disappears.
+    """
+    import re
+    doc = (ROOT / "criteria" / "v0.1" / "index.md").read_text()
+    for n in ("C1", "C2", "C3", "C4"):
+        assert re.search(rf"^#{{2,3}} .*\{{#{n}\}}\s*$", doc, re.M), (
+            f"{{#{n}}} is not at the end of a heading line, so it will not "
+            f"render as an id and criteria/v0.1/#{n} will not resolve")
+
+
 def test_census_page_is_not_stale(capsys):
     """POLICY: the census page is generated, not written.
 

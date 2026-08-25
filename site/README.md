@@ -104,8 +104,8 @@ Implemented as plain HTML with a **relative** target (`../v0.1/`), not with
 - No plugin dependency, and the file behaves the same whether or not Jekyll ever
   runs on it.
 
-It currently points at **v0.1, which is provisional and unpublished**. That is
-correct — it is the only version — but it is a reason not to enable Pages yet.
+It points at **v0.1, published and frozen on 25 August 2026**. It is the only
+version, so the redirect stays put until a v0.2 exists.
 
 Note this is a meta-refresh, not a 301. Fine for readers, imperfect for
 crawlers; one reason to reach for Cloudflare Pages if that ever matters.
@@ -125,16 +125,19 @@ publishes nothing — Pages is enabled separately, in repository settings.
 The config is versioned ahead of being live on purpose: it gets reviewed while
 nothing is at stake, rather than under pressure on the day v0.1 publishes.
 
-**Do not enable Pages until a criteria version is published and frozen.** There
-is nothing to serve: v0.1 is a draft, `/criteria/latest` points at that draft,
-and the site has no index page yet. Serving a provisional document at a stable
-URL invites exactly the citation the versioning policy exists to prevent.
+The rule that governed this — **do not enable Pages until a criteria version is
+published and frozen** — is now satisfied. v0.1 published and froze on 25 August
+2026, both re-verification passes having run clean, and there is an index and a
+census to serve.
 
-Remaining before the site goes live:
+Pages is still off, and turning it on is Idil's call rather than a consequence
+of the above.
 
-- [ ] Port and freeze the v0.1 criteria text, with explicit `{#C1}`–`{#C4}` ids.
-- [ ] Add a site index listing the criteria versions.
-- [ ] Build locally (`bundle exec jekyll serve`) and **check the rendered HTML**
-      for the anchor ids — an anchor that exists only in the markdown is not a
-      citable anchor.
-- [ ] Enable Pages in repository settings.
+- [x] Port and freeze the v0.1 criteria text, with explicit `{#C1}`–`{#C4}` ids.
+- [x] Add a site index listing the criteria versions.
+- [x] Check the **rendered HTML** for the anchor ids. Done by hand with
+      kramdown 2.5.2 on 25 August 2026: all four come out as `<h2 id="Cn">`.
+      A test asserts the condition that makes that possible — the `{#Cn}` has
+      to terminate a heading line — but it is a proxy for rendering, not a
+      substitute, and rendering is what to repeat before publishing v0.2.
+- [ ] Enable Pages in repository settings. **Waiting on Idil.**

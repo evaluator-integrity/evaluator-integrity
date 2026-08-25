@@ -24,8 +24,7 @@ doing the load-bearing work, not our authority.
 
 - **[Criteria v0.1](criteria/v0.1/)** — four criteria, each externally cited,
   each with a stable anchor (`#C1`–`#C4`) for citing a single criterion.
-  *Provisional. Not yet published, and not yet citable — see the status line on
-  the page itself.*
+  *Published 25 August 2026 and frozen. Corrections create a new version.*
 - **[Configuration census](census/)** — 27 evaluator configurations shipped as
   framework defaults, scored against v0.1, with the evidence behind each
   verdict.

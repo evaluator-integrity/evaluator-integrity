@@ -9,4 +9,4 @@ authors:
 version: 0.1.0
 repository-code: "https://github.com/idilgozel/evaluator-integrity"
 license: CC-BY-4.0
-# date-released is deliberately unset. It goes in when v0.1 actually publishes.
+date-released: 2026-08-25

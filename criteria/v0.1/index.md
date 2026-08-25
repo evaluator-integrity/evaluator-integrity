@@ -8,16 +8,27 @@ title: "Evaluator Integrity Criteria v0.1"
 
 # Evaluator Integrity Criteria
 
-**Version 0.1 — provisional. Not yet published.**
+**Version 0.1 — current.**
 
-**Publication date:** not yet published.
-**Status:** draft. This version has no frozen text and must not be cited.
+**Publication date:** 25 August 2026.
+**Status:** current. This text is frozen. Corrections create a new version;
+they never edit this one.
 
 <!--
-On publication, replace the three lines above with the real date and a status of
-"current". From that moment this file is frozen: corrections create v0.2, they
-never edit v0.1. The per-criterion anchor ids are the citation surface and must never
-change meaning.
+FROZEN as of 25 August 2026. Do not edit the text of this file — not for a
+typo, not for a clarification, not for a broken link. A correction creates
+v0.2, and v0.1 keeps saying whatever it said, with a superseded marker added
+when that day comes. Someone will have made a decision on the basis of this
+text as it stands, and editing under them turns their citation into a claim
+they never made.
+
+The per-criterion anchor ids are the citation surface and never change meaning.
+
+Published after both re-verification passes ran clean on 25 August 2026:
+conformance.verify_quotes --require-artifacts (every corpus record backed by
+the shipped artifact it cites) and conformance.verify_citations
+--require-sources (every quantity C1–C4 state read back out of the source it
+names).
 -->
 
 
