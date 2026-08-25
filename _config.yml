@@ -5,8 +5,9 @@
 # This lives here so the build config is versioned and reviewable before it is
 # ever live, not so that it goes live.
 #
-# Do not enable Pages until a criteria version is published and frozen. There is
-# currently nothing to serve: v0.1 is a provisional draft.
+# v0.1 published and froze on 25 August 2026, so the condition that held this
+# back is met. Pages is still off; turning it on is a separate, deliberate
+# action in repository settings.
 #
 # Design note: the site builds from the repository root, so criteria/vX.Y/index.md
 # is rendered in place. The document the world reads and the file the conformance

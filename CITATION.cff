@@ -1,12 +1,28 @@
 cff-version: 1.2.0
 message: "If you cite these criteria, please cite the versioned path (criteria/vX.Y/), not criteria/latest. Published versions are frozen; latest moves."
 title: "Evaluator Integrity Criteria"
+abstract: >-
+  Criteria for auditing the evaluators AI teams use to measure their own
+  systems — LLM judges and test harnesses. Each criterion is drawn from a
+  published result rather than invented, and every quantity the criteria state
+  is recorded against the source it was read from. Published with a corpus of
+  27 scored framework-default configurations so that any score can be
+  re-derived from the artifacts it cites.
+type: dataset
 authors:
   - family-names: Gozel
     given-names: Idil
     email: ucapgoz@ucl.ac.uk
     affiliation: University College London
 version: 0.1.0
-repository-code: "https://github.com/idilgozel/evaluator-integrity"
-license: CC-BY-4.0
 date-released: 2026-08-25
+repository-code: "https://github.com/idilgozel/evaluator-integrity"
+url: "https://idilgozel.github.io/evaluator-integrity/criteria/v0.1/"
+license: CC-BY-4.0
+keywords:
+  - evaluation
+  - LLM-as-a-judge
+  - measurement validity
+  - reward hacking
+  - benchmark integrity
+  - AI auditing

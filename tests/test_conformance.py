@@ -342,7 +342,14 @@ def test_published_prose_agrees_with_derived_figures():
     # to a cited external result -- "10 of 10 audited benchmarks" is BenchJack's
     # finding, not ours, and must pass through untouched.
     ours = {m for _, m in pairs}
-    for md in (ROOT / "criteria").rglob("*.md"):
+    # Everything published as prose, not just the criteria. The README carries
+    # the census headline, which is the first figure most readers will ever see
+    # and was previously the only published claim nothing re-derived.
+    published = list((ROOT / "criteria").rglob("*.md")) + [
+        ROOT / "README.md", ROOT / "index.md", ROOT / "census" / "index.md",
+        ROOT / "CONTRIBUTING.md",
+    ]
+    for md in published:
         for n, m in re.findall(r"\b(\d{1,3}) of (\d{1,3})\b", md.read_text()):
             if int(m) not in ours:
                 continue

@@ -96,11 +96,22 @@ python -m conformance.report --check
 python -m conformance.verify_quotes --check
 python -m conformance.verify_citations --check
 python -m conformance.coherence --check
+python scripts/check_public_safe.py --history
+python scripts/build_census.py --check
 ```
 
 CI runs exactly these on push and pull request, on Python 3.11.
 
-The last three are three levels of the same demand — that a claim names the
+`check_public_safe --history` scans every blob reachable from every ref, not
+just the current state. Publishing this repository publishes every commit ever
+made, and the working-tree scan cannot see a file that was committed and then
+deleted. It refuses to run on a shallow clone rather than reporting clean over
+one commit, so CI checks out with `fetch-depth: 0`.
+
+`build_census --check` fails when `census/index.md` has drifted from the corpus
+it describes. That page is generated, never edited by hand.
+
+verify_quotes, verify_citations and coherence are three levels of the same demand — that a claim names the
 thing it rests on, and still matches it.
 
 `verify_quotes` re-reads every corpus quote out of the pinned package it cites.
@@ -110,11 +121,18 @@ says so loudly rather than passing quietly.
 `verify_citations` makes the same demand of the criteria's own figures: every
 quantity stated in `conformance/criteria.py` or in the published markdown has to
 name the source it came from and the locator inside it. It runs for real on a
-bare clone, because the ledger it checks is in the repository. Most of that
-ledger is currently `unverified` — stated in the criteria, not yet read back out
-of the pinned source — and the command prints how much. **`unverified` is a
-value, not a gap to fill in.** Never invent a quote to clear one; an empty slot
-cannot be cited by mistake and a fabricated quote can.
+bare clone, because the ledger it checks is in the repository.
+
+Every row was read back out of its source on 25 August 2026, so the ledger is
+currently clean — but the statuses that matter are the awkward ones.
+**`unverified` is a value, not a gap to fill in.** Never invent a quote to clear
+one; an empty slot cannot be cited by mistake and a fabricated quote can. That
+is not hypothetical here: one row carried a quote assembled from an internal
+note rather than read from the paper, and it survived until someone fetched the
+paper. `unsupported` — the source read and found to contradict us — is a
+decision for the author, never something to resolve by softening the prose to
+fit. And `ours` marks a figure we computed rather than read; the check requires
+the criterion text itself to say so.
 
 `coherence` checks that a criterion's question, its pass condition and its
 published prose still state one requirement. C2 spent a while asking for a
