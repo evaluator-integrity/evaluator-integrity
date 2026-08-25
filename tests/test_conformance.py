@@ -324,6 +324,17 @@ def test_published_prose_agrees_with_derived_figures():
                 f"prose is now false, or the claim was never checked.")
 
 
+def test_census_page_is_not_stale(capsys):
+    """POLICY: the census page is generated, not written.
+
+    A published page stating "0 of 24" that someone edited by hand is a number
+    with nothing behind it. This is published_figures.json's rule applied to
+    the prose that surrounds those figures.
+    """
+    import scripts.build_census as build_census
+    assert build_census.main(["--check"]) == 0, capsys.readouterr().err
+
+
 def test_evidence_is_not_stale():
     from conformance.report import load_corpus, check_evidence_freshness
     assert not check_evidence_freshness(load_corpus(CORPUS))

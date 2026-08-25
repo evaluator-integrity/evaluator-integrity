@@ -81,6 +81,12 @@ jobs:
       - name: Check criteria coherence
         run: python -m conformance.coherence --check
 
+      # The census page is generated from the corpus. A page stating a
+      # verdict count that someone edited by hand is a number with nothing
+      # behind it; this fails the build when the two have drifted.
+      - name: Census page matches the corpus
+        run: python scripts/build_census.py --check
+
       - name: Verify the pre-commit hook is wired
         run: |
           test -x .githooks/pre-commit \
