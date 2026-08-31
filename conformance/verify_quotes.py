@@ -45,7 +45,7 @@ Rebuild the artifact tree from the public registries, then point this at it.
     for p in ragas==0.4.3 autoevals==0.3.0 langchain-classic==1.0.8 \\
              arize-phoenix-evals==3.3.0 arize-phoenix-evals==2.0.0 \\
              openevals==0.2.0 mlflow==3.15.1 evals==3.0.1.post1 \\
-             deepeval==4.1.5; do
+             deepeval==4.1.5 inspect-ai==0.3.261; do
         pip download --no-deps --dest . "$p"
     done
     mkdir -p x
@@ -101,7 +101,8 @@ def resolve(art, root: str) -> str:
                             art.path.split("/", 1)[1])
     top = {"ragas": "ragas", "evals": "evals", "autoevals": "autoevals",
            "langchain-classic": "langchain_classic", "openevals": "openevals",
-           "mlflow": "mlflow", "promptfoo": "promptfoo"}
+           "mlflow": "mlflow", "promptfoo": "promptfoo",
+           "inspect-ai": "inspect_ai"}
     name = art.package.split("==")[0].split("@")[0]
     if name == "arize-phoenix-evals":
         stem = "phoenix200" if "2.0.0" in art.package else "arize_phoenix_evals"

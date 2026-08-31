@@ -267,5 +267,22 @@ ARTIFACT_DATA = [
       "generate_claims"
     ],
     "note": ""
-  }
+  },
+{
+  "config_ids": [
+    "inspect-ai/model-graded-qa"
+  ],
+  "package": "inspect-ai==0.3.261",
+  "registry": "pypi",
+  "path": "inspect_ai/scorer/_model.py",
+  "sha256": "092049f043a24940de1b6eed0679882cb9741819653ae95e04887c9bf3cea03e",
+  "fragments": [
+    "You are assessing a submitted answer on a given task based on a criterion. Here is the data:",
+    "Does the submission meet the criterion?",
+    "First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.",
+    "# these templates are based on the openai closedqa templates here:",
+    "result = await model.generate([scoring_prompt])"
+  ],
+  "note": "Entry generated 2026-08-31 by hashing the downloaded wheel (inspect_ai-0.3.261-py3-none-any.whl); fragments asserted against the file bytes before writing."
+},
 ]

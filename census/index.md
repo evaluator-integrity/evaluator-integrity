@@ -11,7 +11,7 @@ title: "Evaluator Integrity — Configuration Census"
 
 # Configuration census
 
-27 evaluator configurations, scored against [criteria v0.1](../criteria/v0.1/).
+28 evaluator configurations, scored against [criteria v0.1](../criteria/v0.1/).
 
 Every configuration here is a **framework default** — what an evaluation
 framework ships with out of the box, which anyone can install and read.
@@ -27,18 +27,18 @@ rather than to the component being scored, it reads `n/a` rather than
 
 ## What the corpus shows
 
-- **0 of 24** configurations in
+- **0 of 25** configurations in
   scope satisfy C1. None commits an answer of its own before seeing the
   candidate.
-- **9 of 24** are
+- **10 of 25** are
   recompute variants: they instruct the judge to solve the problem
   first, in a prompt that already contains the candidate. The cited
   source measures that as a failure, not a partial fix.
-- **13 of 24** are
+- **13 of 25** are
   handed a reference answer. A reference given to the judge is not a
   channel independent of the judge, so it does not satisfy C2.
-- **9 packages** from
-  **8 vendors**.
+- **10 packages** from
+  **9 vendors**.
 
 ## The configurations
 
@@ -52,6 +52,7 @@ rather than to the component being scored, it reads `n/a` rather than
 | `deepeval/g-eval-as-documented` | verifiable | fail | fail | n/a | fail | [source](https://deepeval.com/docs/metrics-llm-evals) |
 | `deepeval/hallucination` | verifiable | fail | fail | n/a | fail | [source](https://github.com/confident-ai/deepeval/tree/v4.1.5/deepeval/metrics/hallucination/templates) |
 | `deepeval/summarization` | subjective | n/a | n/a | n/a | fail | [source](https://github.com/confident-ai/deepeval/tree/v4.1.5/deepeval/metrics/summarization/templates) |
+| `inspect-ai/model-graded-qa` | verifiable | fail | fail | n/a | fail | [source](https://github.com/UKGovernmentBEIS/inspect_ai/blob/0.3.261/src/inspect_ai/scorer/_model.py) |
 | `langchain-classic/cot_qa` | verifiable | fail | fail | n/a | fail | [source](https://github.com/langchain-ai/langchain/blob/185119f98e6286253a2326d7cf4f59592678023d/libs/langchain/langchain_classic/evaluation/qa/eval_prompt.py) |
 | `langchain-classic/criteria` | mixed | fail | fail | n/a | fail | [source](https://github.com/langchain-ai/langchain/blob/185119f98e6286253a2326d7cf4f59592678023d/libs/langchain/langchain_classic/evaluation/criteria/prompt.py) |
 | `langchain-classic/labeled_criteria` | verifiable | fail | fail | n/a | fail | [source](https://github.com/langchain-ai/langchain/blob/185119f98e6286253a2326d7cf4f59592678023d/libs/langchain/langchain_classic/evaluation/criteria/prompt.py) |

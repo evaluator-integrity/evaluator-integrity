@@ -24,7 +24,7 @@ cites its source, so the criteria are only as strong as the work behind them
 - **[Criteria v0.1](criteria/v0.1/)** — four criteria, each with a stable
   anchor (`#C1`–`#C4`) so a single criterion can be cited on its own.
   Published 25 August 2026 and frozen; corrections appear as a new version.
-- **[Configuration census](census/)** — 27 evaluator configurations shipped
+- **[Configuration census](census/)** — 28 evaluator configurations shipped
   as framework defaults, scored against v0.1, with the evidence behind each
   verdict.
 - **[Candidate criteria](criteria/candidates.html)** — requirements that

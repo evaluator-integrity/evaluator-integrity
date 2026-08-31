@@ -1,0 +1,46 @@
+{
+ "config_id": "inspect-ai/model-graded-qa",
+ "source_type": "framework_default_template",
+ "source_url": "https://github.com/UKGovernmentBEIS/inspect_ai/blob/0.3.261/src/inspect_ai/scorer/_model.py",
+ "artifact": "inspect-ai==0.3.261",
+ "artifact_registry": "pypi",
+ "artifact_path": "inspect_ai/scorer/_model.py",
+ "artifact_sha256": "092049f043a24940de1b6eed0679882cb9741819653ae95e04887c9bf3cea03e",
+ "evidence_verified": "2026-08-31",
+ "collected": "2026-08-31",
+ "criteria_version": "0.1",
+ "collector": "idil",
+ "task_class": "verifiable",
+ "stratum": "framework_default",
+ "framework": "inspect-ai",
+ "framework_version": "0.3.261",
+ "domain": "general",
+ "notes": "Maintained by the UK AI Security Institute (UKGovernmentBEIS). Added 31 Aug 2026, after the accompanying study's snapshot; the study's counts (24 configurations, 8 frameworks) describe the corpus as of its measurement date and are not restated by this record. DEFAULT_MODEL_GRADED_QA_TEMPLATE and default_instructions both ship in the evidence file, whose own comment states: 'these templates are based on the openai closedqa templates' -- the documented ancestor of the openai-evals/closedqa record and its descendants. model_graded_fact delegates to model_graded_qa with a different template and is out of this record's scope. Note in fairness: this configuration's surrounding engineering is unusually careful -- dataset-controlled inputs have [BEGIN DATA]/[END DATA] markers neutralised against judge prompt injection, the grade regex binds to the LAST 'GRADE:' so an injected early verdict cannot win, and an off-menu verdict is a parse failure rather than a score. That addresses prompt injection, which the criteria's scope notes as not the decisive failure; it does not de-anchor the judge.",
+ "assessments": {
+  "C1_de_anchoring": {
+   "verdict": "fail",
+   "evidence": "Single call: model_scoring_prompt() formats one ChatMessageUser from DEFAULT_MODEL_GRADED_QA_TEMPLATE -- '[Task]: {question} ... [Submission]: {answer} ... [Criterion]: {criterion}' then 'Does the submission meet the criterion?' -- and the sole generate call is 'result = await model.generate([scoring_prompt])'. The candidate is in context before any judge reasoning exists. default_instructions(): 'First, write out in a step by step manner your reasoning about the criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset.' -- the openai-evals/closedqa instruction verbatim; reasoning is scoped to the criterion rather than to solving the task, no parseable answer of the judge's own is emitted, and acceptance is the holistic 'GRADE: C/P/I' verdict, not a match.",
+   "judgement_call": false,
+   "recompute_variant": true
+  },
+  "C2_ground_truth_channel": {
+   "verdict": "fail",
+   "evidence": "Reference-free with respect to a gold answer; the template's {criterion} slot is filled from target.text and presented to the judge, which then renders the only verdict. No second instrument exists in the configuration.",
+   "judgement_call": true,
+   "reference_supplied": false,
+   "reasoning": "Scored consistently with the ancestor record openai-evals/closedqa: a criterion string handed to the judge is not a channel independent of the judge, and reference_supplied is false because the slot carries a grading criterion rather than a gold answer (model_graded_fact, which is handed an expert answer, is a separate configuration outside this record)."
+  },
+  "C3_retrieval_controls": {
+   "verdict": "not_applicable",
+   "evidence": "The scorer grades a completed TaskState against a criterion string. The sandboxing, network access and repository visibility of whatever produced the candidate are properties of the surrounding Inspect task and sandbox configuration, not of this scorer.",
+   "judgement_call": true,
+   "reasoning": "Marked n/a rather than fail throughout this stratum. Penalising a metric for a property of the harness around it would inflate the failure rate dishonestly.",
+   "not_applicable_reason": "harness_scope"
+  },
+  "C4_degenerate_pass_resistance": {
+   "verdict": "fail",
+   "evidence": "Scoring is a single pass over the sample's fixed input and target. Nothing in the configuration introduces inputs the candidate cannot enumerate in advance; the default template, instructions and grade pattern are public and static in the shipped package. The delimiter-neutralisation and last-match grade binding in the same file resist prompt injection, which is a different property: an injection-proof judge that anchors on the candidate still scores plausibility.",
+   "judgement_call": false
+  }
+ }
+}

@@ -10,7 +10,7 @@ regulatory. They do not assess model quality. They assess whether the thing
 measuring model quality can be relied on.
 
 **[Criteria v0.1](criteria/v0.1/index.md)** — four criteria, published and
-frozen on 25 August 2026. **[Configuration census](census/index.md)** — 27
+frozen on 25 August 2026. **[Configuration census](census/index.md)** — 28
 evaluator configurations scored against them.
 
 ## Don't trust this. Check it.
@@ -78,15 +78,15 @@ python scripts/build_census.py --check
 
 ## What the census found
 
-27 framework-default configurations — what nine packages from eight vendors ship
+28 framework-default configurations — what ten packages from nine vendors ship
 out of the box — scored against v0.1.
 
-- **0 of 24** in-scope configurations satisfy C1. None commits an answer of its
+- **0 of 25** in-scope configurations satisfy C1. None commits an answer of its
   own before it is shown the candidate.
-- **9 of 24** are recompute variants: they tell the judge to solve the problem
+- **10 of 25** are recompute variants: they tell the judge to solve the problem
   first, in a prompt that already contains the candidate. The cited source
   measures that as a failure, not a partial fix.
-- **13 of 24** are handed a reference answer. A reference given to the judge is
+- **13 of 25** are handed a reference answer. A reference given to the judge is
   not a channel independent of the judge.
 
 These are defaults, not indictments. The same framework can be configured to
