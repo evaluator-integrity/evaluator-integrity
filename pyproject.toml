@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [
-    { name = "Idil Gozel", email = "ucapgoz@ucl.ac.uk" },
+    { name = "Idil Gozel", email = "idilgozel@evaluatorintegrity.com" },
 ]
 keywords = ["evaluation", "llm-judge", "audit", "conformance"]
 classifiers = [

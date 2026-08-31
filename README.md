@@ -187,4 +187,4 @@ matters for tooling that may be embedded in commercial audit pipelines.
 
 ---
 
-Idil Gozel · University College London · <ucapgoz@ucl.ac.uk>
+Idil Gozel · Evaluator Integrity, London · <idilgozel@evaluatorintegrity.com>

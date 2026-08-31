@@ -82,5 +82,5 @@ deciding whether to trust the method.
   cannot be cited by mistake; an invention can.
 - Keep CI green. A project telling others to take measurement seriously does not
   ship a red build.
-- Author: Idil Gozel <ucapgoz@ucl.ac.uk>, University College London.
+- Author: Idil Gozel <idilgozel@evaluatorintegrity.com>, Evaluator Integrity, London.
 - Do not add co-author or AI-attribution trailers to commits.

@@ -12,8 +12,8 @@ type: dataset
 authors:
   - family-names: Gozel
     given-names: Idil
-    email: ucapgoz@ucl.ac.uk
-    affiliation: University College London
+    email: idilgozel@evaluatorintegrity.com
+    affiliation: Evaluator Integrity, London
 version: 0.1.0
 date-released: 2026-08-25
 repository-code: "https://github.com/idilgozel/evaluator-integrity"
