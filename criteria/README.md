@@ -5,8 +5,7 @@ those citations will sit in procurement or regulatory documents that outlive
 this project's attention span. A citation written in 2028 has to still resolve
 to the text its author actually read.
 
-That single requirement decides everything below. This is policy, not
-convention.
+Everything below follows from that requirement.
 
 ## Published versions are frozen
 
@@ -19,10 +18,10 @@ right thing, and v0.1 keeps saying the wrong thing forever — with a note
 pointing at its successor, which is an addition of a superseded marker, not a
 rewrite of the substance.
 
-This is uncomfortable and it is the point. Someone made a decision on the basis
-of the text as it stood. Editing under them turns their citation into a claim
-they never made, and quietly rewriting a published standard is precisely the
-kind of thing this project exists to catch other people doing.
+That is deliberate. Someone made a decision on the basis of the text as it
+stood, and editing under them turns their citation into a claim they never
+made. Quietly rewriting a published standard is also the kind of failure this
+project documents in others, which makes it the one we can least afford.
 
 ## Nothing is deleted or moved
 
@@ -38,7 +37,7 @@ cited text is gone.
 **Where a property matters but no threshold or pass line can be cited, it
 becomes an evidence requirement, not a pass condition.**
 
-This is policy, and it has a failure on each side of it.
+Both alternatives fail.
 
 Put an uncitable property in a *pass condition* and you have invented a
 standard. C3 required the eval environment to "document and restrict" its
@@ -54,9 +53,8 @@ a record, and it cannot fail a build.
 
 The evidence requirement is the position between them. It compels disclosure of
 the thing that matters without asserting a line we cannot defend, and a
-submission lacking it scores `insufficient_evidence` — which says "not shown"
-rather than "failed", and is the honest verdict when the honest answer is that
-nobody has measured it.
+submission lacking it scores `insufficient_evidence` — "not shown"
+rather than "failed".
 
 Three instances, all live:
 
@@ -69,9 +67,8 @@ Three instances, all live:
 - **C4** requires per-check reachability for held-out checks. No citable result
   fixes what proportion must be reachable.
 
-When you are tempted to write a number into a pass condition, check whether you
-can cite it. If you cannot, the number belongs to the reader, and your job is to
-make them able to compute it.
+Before writing a number into a pass condition, check whether it can be cited.
+If it cannot, give the reader the inputs and let them compute it themselves.
 
 ## Stable anchors
 

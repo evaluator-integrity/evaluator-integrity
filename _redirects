@@ -1,0 +1,5 @@
+# The frozen criteria/v0.1/index.md links to ../candidates.md (the source
+# path). The built page lives at /criteria/candidates. The frozen file is
+# never edited, so the edge translates instead: a real 301, per site/README's
+# stated reason for moving to Cloudflare Pages.
+/criteria/candidates.md  /criteria/candidates  301

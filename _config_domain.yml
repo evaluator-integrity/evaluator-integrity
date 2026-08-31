@@ -1,0 +1,16 @@
+# Overrides for serving at the apex of evaluatorintegrity.com.
+#
+# Used only as the second file in:
+#   jekyll build --config _config.yml,_config_domain.yml
+# Later files override earlier ones, so the github.io values in _config.yml
+# stay the defaults and this file wins only when explicitly named. The same
+# source builds correctly for either host, and no baseurl is hardcoded into
+# content (the criteria/latest redirect is already relative for this reason).
+url: https://evaluatorintegrity.com
+baseurl: ""
+
+# Cloudflare Pages serves candidates.html at /criteria/candidates; the frozen
+# v0.1 text links to ../candidates.md, which would otherwise 404. _redirects
+# turns that into a real 301 at the edge. Jekyll drops underscore-prefixed
+# files unless told otherwise, so it must be explicitly included in the build.
+include: ["_redirects"]
