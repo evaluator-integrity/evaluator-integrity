@@ -20,7 +20,7 @@
   "assessments": {
     "C1_de_anchoring": {
       "verdict": "pass | fail | not_applicable | insufficient_evidence",
-      "evidence": "Quote the prompt template and call sequence. Passing requires a stage producing the judge's own answer with the candidate ABSENT from context. An in-prompt 'solve it yourself first' instruction is the recompute variant: set recompute_variant true and score fail.",
+      "evidence": "Quote the prompt template and the call sequence. Passing requires some stage to emit a parseable answer of the judge's own BEFORE any comparison, and acceptance to be decided by MATCHING the candidate against that committed answer rather than by a holistic score. Candidate visibility at commitment time is not the discriminator: the source measures commit-first with the candidate in full view, and withholding it entirely is the limiting case of the same independence, not a separate requirement. An in-prompt 'solve it yourself first' instruction that yields no separately parseable committed answer is the recompute variant: set recompute_variant true and score fail.",
       "judgement_call": false,
       "recompute_variant": false
     },

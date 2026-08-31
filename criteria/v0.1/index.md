@@ -203,7 +203,7 @@ A channel offered without this evidence is scored `insufficient evidence`, not
 result fixes how many controls suffice, and inventing a number would repeat the
 mistake corrected in C3.
 
-*Sources: Zhou 2026, arXiv:2607.05904 — hidden-anchor audit design. Kranti &
+*Sources: Zhou 2026, arXiv:2607.05904 — hidden-anchor audit design. Chalamalasetti &
 Vajjala, "LLM Judges Can Be Too Generous When There Is No Reference Answer",
 arXiv:2607.12885, 14 July 2026.*
 

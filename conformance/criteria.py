@@ -153,7 +153,7 @@ CRITERIA: list[Criterion] = [
         ),
         citation=(
             "Zhou 2026, arXiv:2607.05904 (hidden-anchor audit design); "
-            "Kranti & Vajjala 2026, arXiv:2607.12885 (reference-free "
+            "Chalamalasetti & Vajjala 2026, arXiv:2607.12885 (reference-free "
             "over-crediting)"
         ),
         evidence_required=(

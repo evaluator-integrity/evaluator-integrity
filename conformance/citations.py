@@ -154,12 +154,23 @@ SOURCES: list[Source] = [
     ),
     Source(
         id="kranti-vajjala2026",
-        cite="Kranti & Vajjala 2026",
+        cite="Chalamalasetti & Vajjala 2026",
         identifier="arXiv:2607.12885v1",
         url="https://arxiv.org/html/2607.12885v1",
         retrieved="2026-08-25",
         sha256="ea3a84b4d1a2b4e5de20b9217334985fe46612b5fb477d40256e2895bac5306b",
-        note="Reference-free over-crediting. C2's second citation.",
+        note=("Reference-free over-crediting. C2's second citation. "
+              "First author contacted 25 Aug 2026; replied 31 Aug 2026 "
+              "(K. Chalamalasetti, email). Confirmed the paper's scope "
+              "is how a reference affects judge DECISIONS, not whether "
+              "it is an independent evaluation mechanism -- preprint "
+              "wording adjusted to keep that distinction explicit. He "
+              "also supplied per-dataset figures for Gemma3-27B, 0.37 "
+              "on TyDiQA and 0.66 on MATA. NOT adopted: 0.66 conflicts "
+              "with this paper's own prose, quoted verbatim in claim 12 "
+              "as 'as high as 60% ... (Gemma3-27B on MATA)'. The "
+              "criteria state what the paper states until the "
+              "discrepancy is resolved with him."),
     ),
     Source(
         id="cursor2026",
