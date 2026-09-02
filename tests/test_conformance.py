@@ -346,7 +346,7 @@ def test_published_prose_agrees_with_derived_figures():
     # the census headline, which is the first figure most readers will ever see
     # and was previously the only published claim nothing re-derived.
     published = list((ROOT / "criteria").rglob("*.md")) + [
-        ROOT / "README.md", ROOT / "index.md", ROOT / "census" / "index.md",
+        ROOT / "README.md", ROOT / "index.html", ROOT / "census" / "index.md",
         ROOT / "CONTRIBUTING.md", ROOT / "demo.html",
     ]
     for md in published:
