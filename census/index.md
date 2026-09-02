@@ -1,7 +1,7 @@
 ---
 layout: main
 width: wide
-title: "Evaluator Integrity — Configuration Census"
+title: "Configuration census: Evaluator Integrity"
 ---
 
 <!--
@@ -14,14 +14,14 @@ title: "Evaluator Integrity — Configuration Census"
 
 28 evaluator configurations, scored against [criteria v0.1](../criteria/v0.1/).
 
-Every configuration here is a **framework default** — what an evaluation
-framework ships with out of the box, which anyone can install and read.
-That is the whole of what this repository publishes, not a sample of
-something larger. Scores against organisations' own configurations are
-held elsewhere and published only as aggregates, with no attribution.
+Every configuration here is a **framework default**. That is what an
+evaluation framework ships with out of the box, which anyone can install
+and read. This is the whole of what we publish, not a sample of something
+larger. Scores for organisations' own configurations are held elsewhere.
+They are published only as totals, with no names attached.
 
 A verdict is not an opinion about a framework. The same framework can be
-configured to pass or fail every criterion here; what is scored is a
+configured to pass or fail every criterion here. What is scored is one
 configuration. Where a criterion belongs to the surrounding harness
 rather than to the component being scored, it reads `n/a` rather than
 `fail`.
@@ -29,15 +29,15 @@ rather than to the component being scored, it reads `n/a` rather than
 ## What the corpus shows
 
 - **0 of 25** configurations in
-  scope satisfy C1. None commits an answer of its own before seeing the
-  candidate.
+  scope satisfy C1. None of them commits to an answer of its own before
+  seeing the candidate.
 - **10 of 25** are
-  recompute variants: they instruct the judge to solve the problem
-  first, in a prompt that already contains the candidate. The cited
-  source measures that as a failure, not a partial fix.
+  recompute variants. They tell the judge to solve the problem first,
+  in a prompt that already contains the candidate. The cited source
+  measures that as a failure, not a partial fix.
 - **13 of 25** are
-  handed a reference answer. A reference given to the judge is not a
-  channel independent of the judge, so it does not satisfy C2.
+  handed a reference answer. A reference given to the judge is not
+  independent of the judge, so it does not satisfy C2.
 - **10 packages** from
   **9 vendors**.
 
@@ -76,12 +76,12 @@ rather than to the component being scored, it reads `n/a` rather than
 
 ## Reading a verdict
 
-Each verdict rests on a quote from the pinned artifact the record names —
-a package digest, not a version string, so the bytes are obtainable
-rather than merely nameable. The records are JSON, one per configuration,
+Each verdict rests on a quote from the exact file the record names. The
+file is pinned by digest, not by version string, so anyone can obtain
+the same bytes. The records are JSON, one per configuration,
 in [`conformance/corpus/`](https://github.com/idilgozel/evaluator-integrity/tree/main/conformance/corpus).
 
-`insufficient` is not a soft `fail`. It says the evidence required to
-score the criterion was not shown, which is the honest verdict when
+`insufficient` is not a soft `fail`. It means the evidence needed to
+score the criterion was not shown. That is the honest verdict when
 nobody has measured the thing.
 

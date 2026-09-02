@@ -105,21 +105,21 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
       <p class="kicker">Evaluator auditing</p>
       <h1>Your AI system can pass its evaluator and still be wrong.</h1>
       <p class="lede">Evaluator Integrity tests the LLM judges and evaluation
-      pipelines AI teams rely on — before their scores become release,
-      procurement or assurance evidence.</p>
+      pipelines that AI teams rely on. We test them before their scores are
+      used as evidence for a release, a purchase or an assurance claim.</p>
       <p class="ctas">
         <a class="btn" href="{{ '/demo/' | relative_url }}">Watch the evaluator fail &rarr;</a>
         <a class="btn btn-2" href="#contact">Request an evaluator review</a>
       </p>
-      <p class="hero-note">The trace on the right is a real record from
-      the paper, not an illustration. The demo runs the same code in your
+      <p class="hero-note">The trace on the right is a real record from our
+      paper, not an illustration. The demo runs the same code in your
       browser.</p>
     </div>
 
     <div class="console" aria-label="An evaluation trace from the paper">
       <header><span><b>Evaluation trace</b> · G-Eval, as documented</span><span>20 Aug 2026</span></header>
       <div class="row">
-        <span class="lbl">Candidate</span>
+        <span class="lbl">Candidate code</span>
         <div class="code">merge_intervals() <span class="arrow">·</span> visible tests 3 / 3 <span class="flag pass">passed</span></div>
       </div>
       <div class="row">
@@ -131,7 +131,7 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
       </div>
       <div class="row">
         <span class="lbl">Judge score</span>
-        <div class="verdict"><b>1.0</b><span>out of 1.0 — perfect</span></div>
+        <div class="verdict"><b>1.0</b><span>out of 1.0. A perfect score.</span></div>
       </div>
       <div class="row reveal">
         <span class="lbl">What the code actually does</span>
@@ -139,8 +139,9 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
         <div class="code" style="margin-top:0.4rem">held-out check <span class="flag fail">failed</span></div>
       </div>
       <div class="row caption">
-        (1,2) and (3,4) do not touch. <strong>The judge found the line,
-        described what it does, and passed it anyway.</strong>
+        The intervals (1,2) and (3,4) do not touch, so they must not be
+        merged. <strong>The judge found the faulty line, described what it
+        does, and gave it a perfect score anyway.</strong>
         <a href="{{ '/demo/' | relative_url }}">Run it yourself &rarr;</a>
       </div>
     </div>
@@ -151,31 +152,34 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
   <div class="container">
     <div class="section-head">
       <p class="kicker">One result</p>
-      <h2>An ordinary search gamed a shipped judge. A known fix stopped it — on one task.</h2>
-      <p>Best-of-N selection, no jailbreaks, no access to correct answers, run
-      against a documented judge configuration. Two seeds.</p>
+      <h2>An ordinary search fooled a shipped judge. A known fix stopped it, on one task.</h2>
+      <p>We ran a plain best-of-N search against a judge set up exactly as its
+      documentation recommends. No jailbreaks. No prompt injection. No access
+      to the correct answers. We ran it twice with different random seeds.</p>
     </div>
     <div class="ba">
       <div class="ba-box bad">
         <span class="lbl">Shipped configuration</span>
         <b>93 of 96</b>
-        <p>wrong candidates accepted with a passing score. Every one passed
-        every visible test and failed a held-out test the search never saw.</p>
+        <p>wrong programs were accepted with a passing score. Each one passed
+        every test the search could see. Each one failed a held-out test the
+        search never saw.</p>
       </div>
       <div class="ba-arrow" aria-hidden="true">&rarr;</div>
       <div class="ba-box good">
         <span class="lbl">After commit-first judging</span>
         <b>0 of 96</b>
-        <p>The judge solves the task and commits to an answer before it sees a
-        candidate. On this task, that removed the effect completely.</p>
+        <p>Here the judge solves the task and commits to its own answer before
+        it sees any candidate. On this task, that removed the problem
+        completely.</p>
       </div>
     </div>
-    <p class="ba-caveat">On a second task the same fix made things worse
-    (37 and 41 wrong candidates accepted rose to 50 and 75) because the judge's
-    own committed answer was wrong. That is the paper's main finding: the fix
-    moves the thing that gets gamed from the candidate to the judge — so an
-    evaluator is exactly as good as its judge is at the task, and that is
-    something you can measure before you trust it.</p>
+    <p class="ba-caveat">On a second task the same fix made things worse.
+    Wrong programs accepted rose from 37 and 41 to 50 and 75. The reason is
+    that the judge's own answer was wrong. This is the paper's main finding.
+    The fix does not remove the weak point. It moves the weak point from the
+    candidate to the judge. An evaluator is only as good as its judge is at
+    the task, and you can measure that before you trust it.</p>
   </div>
 </section>
 
@@ -183,19 +187,20 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
   <div class="container">
     <div class="section-head">
       <p class="kicker">The evidence</p>
-      <h2>This is the state of shipped evaluators, not one bad configuration.</h2>
+      <h2>This is how shipped evaluators are built, not one bad configuration.</h2>
     </div>
     <div class="numbers">
-      <div class="number"><b>24</b><p>shipped judge configurations audited, from eight widely used
+      <div class="number"><b>24</b><p>default judge configurations audited, from eight widely used
         evaluation frameworks.</p><span class="src">arXiv:2609.00088 · August 2026</span></div>
-      <div class="number"><b class="red">0</b><p>of them implement the tested defence. Nine implement a
-        variant the literature measures as ineffective, all descended from one ancestor prompt.</p><span class="src">arXiv:2609.00088</span></div>
-      <div class="number"><b class="red">93 / 96</b><p>wrong candidates accepted by the documented
-        configuration in the worse seed; 90 in the other.</p><span class="src">arXiv:2609.00088</span></div>
+      <div class="number"><b class="red">0</b><p>of them use the defence that works. Nine use a variant that has
+        been measured and found ineffective. All nine copy the same original
+        prompt.</p><span class="src">arXiv:2609.00088</span></div>
+      <div class="number"><b class="red">93 / 96</b><p>wrong programs accepted by the documented configuration in the
+        worse of the two runs. The other run accepted 90.</p><span class="src">arXiv:2609.00088</span></div>
     </div>
-    <p class="census-line">The <a href="{{ '/census/' | relative_url }}">living census</a> has since grown
-    to 28 defaults from 10 packages; none of the 25 in scope pass the first criterion. The paper's count
-    and the census's count are taken on different dates and are both correct.</p>
+    <p class="census-line">Our <a href="{{ '/census/' | relative_url }}">living census</a> has since grown
+    to 28 default configurations from 10 packages. None of the 25 in scope pass the first criterion.
+    The paper and the census were counted on different dates. Both counts are correct.</p>
   </div>
 </section>
 
@@ -204,20 +209,22 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
     <div class="section-head">
       <p class="kicker">Evaluator review</p>
       <h2>How an evaluator review works</h2>
-      <p>We are accepting a small number of early evaluator reviews from teams
-      whose scores decide something that matters.</p>
+      <p>We are accepting a small number of early evaluator reviews. They are
+      for teams whose evaluator scores decide something that matters.</p>
     </div>
     <div class="grid-3">
       <div class="card"><span class="step-n">01</span><h3>Send the configuration</h3>
-        <p>One evaluator — a judge prompt, a rubric, a model-graded harness — the
-        task it scores, and one sentence on what decision its score feeds.</p></div>
+        <p>Send us one evaluator. That can be a judge prompt, a rubric or a
+        model-graded test harness. Include the task it scores and one sentence
+        on what decision its score feeds.</p></div>
       <div class="card"><span class="step-n">02</span><h3>We test it the way the paper did</h3>
-        <p>Scored against the open criteria, then an ordinary optimisation loop
-        is run against it: the loop production systems run every day, with no
-        access to correct answers.</p></div>
+        <p>We score it against our open criteria. Then we run an ordinary
+        optimisation loop against it, the same loop production systems run
+        every day, with no access to the correct answers.</p></div>
       <div class="card"><span class="step-n">03</span><h3>You get what it accepted that it should not have</h3>
-        <p>Each failure with the evidence — the candidate, the score, the
-        judge's own words — and what to change so the score means something.</p></div>
+        <p>You get each failure with its evidence: the candidate, the score
+        and the judge's own words. You also get what to change so that the
+        score means something.</p></div>
     </div>
   </div>
 </section>
@@ -230,16 +237,16 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
     </div>
     <div class="grid-3">
       <div class="card"><h3>Product and evaluation teams</h3>
-        <p>Your evaluator gates a release, selects a model or tunes an agent —
-        especially in coding, finance, legal, health and compliance, where a
-        confidently wrong output is expensive.</p></div>
+        <p>Your evaluator gates a release, selects a model or tunes an agent.
+        This matters most in coding, finance, legal, health and compliance,
+        where a confidently wrong output is expensive.</p></div>
       <div class="card"><h3>Assurance, procurement and insurance</h3>
-        <p>You are handed an evaluation score as evidence and need to know what
-        it is evidence of before you accept it.</p></div>
+        <p>You are handed an evaluation score as evidence. Before you accept
+        it, you need to know what it is evidence of.</p></div>
       <div class="card"><h3>Framework maintainers</h3>
-        <p>You ship a default judge configuration and would rather hear about
-        it from us than from an incident. Every verdict in the census cites
-        the exact artifact it was read from.</p></div>
+        <p>You ship a default judge configuration. You would rather hear about
+        a weakness from us than from an incident. Every verdict in the census
+        cites the exact file it was read from.</p></div>
     </div>
   </div>
 </section>
@@ -252,22 +259,23 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
     </div>
     <div class="grid-3">
       <a class="card link" href="https://arxiv.org/abs/2609.00088"><h3>The paper</h3>
-        <p>The audit of shipped judge configurations, the controlled experiment,
-        and the finding that commit-first judging inherits the judge's own
-        errors. Run records and replication code are published with it.</p>
+        <p>The audit of shipped judge configurations, the controlled
+        experiment, and the finding that commit-first judging inherits the
+        judge's own errors. The run records and replication code are published
+        with it.</p>
         <p class="more">arXiv:2609.00088 &rarr;</p></a>
       <a class="card link" href="{{ '/census/' | relative_url }}"><h3>Configuration census</h3>
-        <p>Every framework default we have scored, each verdict resting on a
-        quote from an artifact pinned by digest, regenerated from the corpus
-        on every build.</p>
+        <p>Every framework default we have scored. Each verdict rests on a
+        quote from the exact file it was read from. The page is regenerated
+        from the records on every build.</p>
         <p class="more">28 configurations &rarr;</p></a>
       <a class="card link" href="{{ '/criteria/v0.1/' | relative_url }}"><h3>Open criteria</h3>
-        <p>Four evidence-backed requirements an evaluator has to meet before its
-        scores mean anything. Frozen on 25 August 2026, with stable anchors so
-        each can be cited on its own.</p>
+        <p>Four requirements an evaluator has to meet before its scores mean
+        anything. Each one is backed by a published result. Frozen on 25
+        August 2026, so each criterion can be cited on its own.</p>
         <p class="more">Criteria v0.1 &rarr;</p></a>
     </div>
-    <p class="repo-line">Source, corpus and the checks that re-verify both:
+    <p class="repo-line">The source code, the records and the checks that verify them are at
     <a href="https://github.com/idilgozel/evaluator-integrity">github.com/idilgozel/evaluator-integrity</a>.
     If a criterion is wrong, we want to know.</p>
   </div>
@@ -288,7 +296,7 @@ description: "Your AI system can pass its evaluator and still be wrong. Evaluato
   <div class="container">
     <p><strong>Founded by Idil Gozel</strong>, London. Physicist by training
     (UCL) and author of the paper above. Evaluator Integrity does not build or
-    sell evaluation pipelines: testing an evaluator requires independence from
+    sell evaluation pipelines. Testing an evaluator requires independence from
     whoever sells it.</p>
   </div>
 </section>

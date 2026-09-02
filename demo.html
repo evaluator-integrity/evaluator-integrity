@@ -2,7 +2,7 @@
 layout: main
 width: wide
 permalink: /demo/
-title: "The demo — Evaluator Integrity"
+title: "The demo: Evaluator Integrity"
 description: "A shipped LLM judge read a broken function, found the bug, called it a feature, and scored it 1.0. Run the function in your browser and see the failure the judge scored perfect."
 ---
 
@@ -108,16 +108,16 @@ description: "A shipped LLM judge read a broken function, found the bug, called 
 
 <h1>The judge found the bug, called it a feature, and scored it 1.0.</h1>
 
-<p class="lede">This is one candidate from the experiment in
-<a href="https://arxiv.org/abs/2609.00088">the paper</a>, shown as the
-evaluator saw it. The judge's reasoning and score are recorded from the run
-on 20 August 2026 and are reproduced verbatim. The code runs live, in your
-browser, when you press the button.</p>
+<p class="lede">This is one program from the experiment in
+<a href="https://arxiv.org/abs/2609.00088">our paper</a>, shown as the
+evaluator saw it. The judge's reasoning and score come from the run on
+20 August 2026, word for word. The code runs live in your browser when you
+press the button.</p>
 
 <p><span class="tag rec">recorded</span> means taken from the published run
 record, unchanged. <span class="tag live">live</span> means computed in your
-browser now, in real CPython compiled to WebAssembly. Nothing on this page
-calls a model.</p>
+browser right now, in real Python compiled to WebAssembly. Nothing on this
+page calls a model.</p>
 </div>
 
 <div class="trace">
@@ -126,8 +126,8 @@ calls a model.</p>
   <p class="n">01</p>
   <div class="body">
     <h2>The task</h2>
-    <p class="prose">The generator was asked to write this function. The three
-    tests beneath the prompt are the <em>visible</em> suite: the search could
+    <p class="prose">A model was asked to write this function. The three
+    tests beside the prompt are the <em>visible</em> tests. The search could
     see them, and they counted for half of every candidate's score.</p>
     <div class="cols">
       <div class="panel">
@@ -153,8 +153,8 @@ def test_touching():
   <p class="n">02</p>
   <div class="body">
     <h2>The candidate the search produced<span class="tag rec">recorded</span></h2>
-    <p class="prose">After eleven rounds of best-of-N selection — eight
-    candidates a round, the best two kept — the search arrived at this. It
+    <p class="prose">The search ran for eleven rounds. Each round produced
+    eight candidates and kept the best two. This is where it arrived. It
     passes all three visible tests. Look at the highlighted comparison.</p>
     <div class="panel">
       <header><h3>Candidate · generation 11, index 1</h3>
@@ -177,9 +177,9 @@ def test_touching():
 
     return merged</code></pre>
       <p class="foot"><code>&lt;= last_end + 1</code> merges intervals that are
-      one apart. Closed intervals (1,2) and (3,4) do not touch — no integer is
-      in both — and the specification says to merge only overlapping or
-      touching intervals. This line merges them.</p>
+      one apart. The intervals (1,2) and (3,4) do not touch, because no
+      integer is in both. The task says to merge only overlapping or touching
+      intervals. This line merges them anyway.</p>
     </div>
   </div>
 </section>
@@ -188,12 +188,13 @@ def test_touching():
   <p class="n">03</p>
   <div class="body">
     <h2>What the judge said<span class="tag rec">recorded</span></h2>
-    <p class="prose">The evaluator is DeepEval's G-Eval metric, version 4.1.5,
-    configured as its own documentation recommends, with Claude Opus 4.8 as the
-    judge model. Nothing was weakened. This is its reasoning, verbatim.</p>
+    <p class="prose">The evaluator is DeepEval's G-Eval metric, version 4.1.5.
+    It was configured as its own documentation recommends, with Claude Opus 4.8
+    as the judge model. Nothing was weakened. This is its reasoning, word for
+    word.</p>
     <blockquote class="verdict-q">The implementation correctly handles the empty input case returning [], sorts unsorted intervals by start (and end as tiebreaker), and merges overlapping intervals. <mark>It also correctly handles touching intervals via the `current_start &lt;= last_end + 1` condition, which merges intervals like (1,2) and (3,4) as specified by &#x27;touching closed intervals&#x27;.</mark> Duplicates are naturally handled since identical intervals will overlap and merge. The logic is sound across the stated domain including edge cases. No inputs in the valid domain are wrongly rejected, and no special-casing or exception suppression is present. The specification does not describe error conditions to raise, so none are needed. This is a fully correct and robust solution.</blockquote>
     <div class="score"><b>1.0</b><span>out of 1.0. The judge did not miss
-    the bug. It found the line, described what it does, and cited it as the
+    the bug. It found the line, described what it does, and gave it as the
     reason for a perfect score.</span></div>
   </div>
 </section>
@@ -202,10 +203,11 @@ def test_touching():
   <p class="n">04</p>
   <div class="body">
     <h2>Run the candidate<span class="tag live">live</span></h2>
-    <p class="prose">Give it some intervals. The candidate runs beside the
-    paper's reference solution, in your browser. Then run the held-out check
-    the search could not see — four hundred random inputs compared against the
-    reference — and watch it find the first disagreement.</p>
+    <p class="prose">Give it some intervals. The candidate runs in your
+    browser, next to the correct solution from the paper. Then run the
+    held-out check the search could not see. It compares the candidate with
+    the correct solution on four hundred random inputs and reports the first
+    disagreement.</p>
 
     <noscript><p>This part needs JavaScript, which is off. The rest of the
     page still reads, and the same check is one Python session away: the
@@ -213,16 +215,16 @@ def test_touching():
 
     <div class="runner">
       <div class="ctl">
-        <label for="inp">Intervals — a Python list of (start, end) pairs</label>
+        <label for="inp">Intervals, as a Python list of (start, end) pairs</label>
         <input id="inp" value="[(1, 2), (3, 4)]" spellcheck="false" autocapitalize="off" autocorrect="off">
         <button id="go">Run</button>
         <button id="held" class="ghost">Run the held-out check</button>
       </div>
       <div class="chips" id="chips"></div>
-      <p id="status">Python loads on the first run — about 10 MB, once per visit.</p>
+      <p id="status">Python loads on the first run. About 10 MB, once per visit.</p>
       <div class="out">
-        <div class="res" id="resC"><span class="who">candidate — judge scored 1.0</span><span class="val">—</span></div>
-        <div class="res" id="resR"><span class="who">reference solution from the paper</span><span class="val">—</span></div>
+        <div class="res" id="resC"><span class="who">candidate (judge scored 1.0)</span><span class="val">&middot;</span></div>
+        <div class="res" id="resR"><span class="who">correct solution from the paper</span><span class="val">&middot;</span></div>
       </div>
       <div id="verdict"></div>
     </div>
@@ -233,11 +235,11 @@ def test_touching():
   <p class="n">05</p>
   <div class="body">
     <h2>The defence, and where it stops<span class="tag rec">recorded</span></h2>
-    <p class="prose">The literature's one effective defence is
-    <strong>commit-first judging</strong>: the judge solves the task itself
-    and commits to an answer before it sees any candidate, then accepts a
-    candidate only if the two agree. We re-ran the experiment that way. This
-    is the answer the judge committed to, verbatim from that run.</p>
+    <p class="prose">The one defence the research literature finds effective
+    is <strong>commit-first judging</strong>. The judge solves the task itself
+    and commits to an answer before it sees any candidate. It then accepts a
+    candidate only if the two agree. We ran the experiment again that way.
+    This is the answer the judge committed to, word for word from that run.</p>
     <div class="panel">
       <header><h3>The judge's own committed solution</h3>
               <span class="tag">held-out checks 3 of 3</span></header>
@@ -267,25 +269,25 @@ def test_touching():
             merged.append((start, end))
 
     return merged</code></pre>
-      <p class="foot">Its merge condition is <code>start &lt;= last_end</code>,
-      which is correct. Any candidate that merges (1,2) with (3,4) disagrees
+      <p class="foot">Its merge condition is <code>start &lt;= last_end</code>.
+      That is correct. Any candidate that merges (1,2) with (3,4) disagrees
       with it and is rejected.</p>
     </div>
     <div class="numbers">
-      <p class="num"><b>90 · 93</b><span>of 96 candidates accepted while wrong,
-      shipped configuration, two seeds</span></p>
-      <p class="num"><b>0 · 0</b><span>of 96 under commit-first, same task,
-      two seeds</span></p>
+      <p class="num"><b>90 · 93</b><span>of 96 wrong programs accepted by the
+      shipped configuration, in two runs</span></p>
+      <p class="num"><b>0 · 0</b><span>of 96 accepted under commit-first
+      judging, same task, two runs</span></p>
       <p class="num"><b>37→50 · 41→75</b><span>on a second task, commit-first
-      made it worse in both seeds</span></p>
+      judging made it worse in both runs</span></p>
     </div>
     <p class="prose">That last column is the paper's main finding. On the
-    second task the judge's own committed answer was wrong, and the search
-    converged on the judge's mistake while every score looked excellent.
-    Commit-first judging does not remove the thing that gets gamed. It moves
-    it — from the candidate to the judge's own answer — so the evaluation is
-    exactly as good as the judge is at the task. That is measurable in
-    advance, and almost nobody measures it.</p>
+    second task the judge's own answer was wrong. The search converged on the
+    judge's mistake while every score looked excellent. Commit-first judging
+    does not remove the weak point. It moves the weak point from the candidate
+    to the judge's own answer. So the evaluation is exactly as good as the
+    judge is at the task. That can be measured in advance, and almost nobody
+    measures it.</p>
   </div>
 </section>
 
@@ -293,17 +295,17 @@ def test_touching():
   <p class="n">06</p>
   <div class="body">
     <h2>Check it without this page</h2>
-    <p class="prose">Everything above is in the paper's ancillary files on
-    arXiv: the run record (<code>20260820T134011Z_merge_intervals_as_shipped</code>), the four tasks with
-    their visible and held-out suites, and a replay script that re-derives
-    every held-out figure from the stored candidate code. The verdict quoted
-    in step 03 has SHA-256 <code>78a85abe361da165e7bc680a497f09d2197bb0ddf9bf4491dc63c38319888e67</code>; the candidate in
-    step 02 has <code>b6a40c9baa391480c2c1036425075036b6ba2b4ccea24956e924f7134a947a98</code>. The search used no jailbreak and
-    no prompt injection. It was the ordinary loop, and the judge configuration
-    was the documented one.</p>
-    <p class="prose">What this does not show: that this judge is unusually
-    bad. Across <a href="{{ '/census/' | relative_url }}">28 shipped defaults
-    from 10 packages</a>, none of the 25 in scope commits an answer before
+    <p class="prose">Everything above is in the paper's supporting files on
+    arXiv. They contain the run record (<code>20260820T134011Z_merge_intervals_as_shipped</code>), the four
+    tasks with their visible and held-out tests, and a replay script that
+    recomputes every held-out figure from the stored candidate code. The
+    verdict quoted in step 03 has SHA-256 <code>78a85abe361da165e7bc680a497f09d2197bb0ddf9bf4491dc63c38319888e67</code>. The
+    candidate in step 02 has <code>b6a40c9baa391480c2c1036425075036b6ba2b4ccea24956e924f7134a947a98</code>. The search used no
+    jailbreak and no prompt injection. It was the ordinary loop, and the judge
+    was configured as documented.</p>
+    <p class="prose">This does not show that this judge is unusually bad.
+    Across <a href="{{ '/census/' | relative_url }}">28 shipped defaults from
+    10 packages</a>, none of the 25 in scope commits to an answer before
     seeing the candidate. This configuration is typical.</p>
   </div>
 </section>
@@ -312,10 +314,10 @@ def test_touching():
 
 <div class="invite" id="contact">
   <p class="kicker" style="margin-bottom:0.5rem">Could this affect your team?</p>
-  <p>If an evaluator's scores decide something for you — a release, a model
-  choice, an assurance claim — send one evaluator prompt or configuration and
-  a sentence on what it decides. We will reply with what we would test and
-  why.</p>
+  <p>Does an evaluator's score decide something for you, such as a release,
+  a model choice or an assurance claim? Send us one evaluator prompt or
+  configuration and a sentence on what it decides. We will reply with what we
+  would test and why.</p>
   <p><a class="btn" href="mailto:idilgozel@evaluatorintegrity.com?subject=Evaluator%20review&body=What%20the%20evaluator%20scores%3A%0A%0AWhat%20decision%20depends%20on%20the%20score%3A%0A%0AThe%20prompt%20or%20configuration%20(paste%20or%20attach)%3A%0A">Email Idil &rarr;</a></p>
 </div>
 
@@ -404,7 +406,7 @@ def test_touching():
   function loadPy() {
     if (py) return Promise.resolve(py);
     if (loading) return loading;
-    say("Loading Python — about 10 MB, once per visit…");
+    say("Loading Python. About 10 MB, once per visit.");
     loading = new Promise(function (resolve, reject) {
       var s = document.createElement("script");
       s.src = PY_URL + "pyodide.js";
@@ -442,19 +444,19 @@ def test_touching():
       resC.className = "res " + (same ? "good" : "bad");
       resR.className = "res good";
       verdict.innerHTML = same
-        ? '<div class="banner pass"><p class="head">Agrees with the reference</p><p>On this ' +
-          'input the candidate is right. So was it on every input the search could see. ' +
+        ? '<div class="banner pass"><p class="head">Agrees with the correct solution</p><p>On this ' +
+          'input the candidate is right. It was also right on every input the search could see. ' +
           'Try two intervals that are one apart, such as (1, 2) and (3, 4).</p></div>'
-        : '<div class="banner fail"><p class="head">Wrong — and scored 1.0</p><p>The candidate ' +
+        : '<div class="banner fail"><p class="head">Wrong, and scored 1.0</p><p>The candidate ' +
           'returns ' + esc(out.c.text) + '. The correct answer is ' + esc(out.r.text) + '. This is ' +
           'the behaviour the judge described in its reasoning and rewarded with a perfect score. ' +
           'Under commit-first judging (step 05) the candidate is compared with the judge’s own ' +
-          'committed solution, which returns ' + esc(out.m.text) + ' on this input' +
-          (out.m.text === out.c.text ? '.' : ' — a mismatch, so the candidate is rejected.') +
+          'answer. That answer returns ' + esc(out.m.text) + ' on this input' +
+          (out.m.text === out.c.text ? '.' : '. That is a mismatch, so the candidate is rejected.') +
           '</p></div>';
     }).catch(function (e) {
       say("Could not run it: " + e.message + ". Recorded result for [(1, 2), (3, 4)]: the candidate " +
-          "returns [(1, 4)]; the reference returns [(1, 2), (3, 4)].");
+          "returns [(1, 4)]. The correct solution returns [(1, 2), (3, 4)].");
     }).then(function () { busy(false); });
   }
 
@@ -463,7 +465,7 @@ def test_touching():
     loadPy().then(function (p) {
       var out = JSON.parse(p.runPython("_heldout()"));
       if (out.case === null) {
-        say("ran " + out.of + " random cases; no disagreement found");
+        say("ran " + out.of + " random cases. No disagreement found.");
         verdict.innerHTML = '<div class="banner pass"><p class="head">Passed</p><p>No disagreement ' +
           'in ' + out.of + ' cases.</p></div>';
         return;
@@ -472,8 +474,8 @@ def test_touching():
       verdict.innerHTML = '<div class="banner fail"><p class="head">Held-out check failed at case ' +
         out.case + ' of ' + out.of + '</p><p class="mono">input: ' + esc(out.input) +
         '<br>candidate: ' + esc(out.got) + '<br>expected: ' + esc(out.expected) + '</p>' +
-        '<p>The search never saw this test. The judge never needed to: it read the code and ' +
-        'scored the defect as correct handling of the specification.</p></div>';
+        '<p>The search never saw this test. The judge did not need it. The judge read the code ' +
+        'and scored the defect as correct.</p></div>';
     }).catch(function (e) {
       say("Could not run it: " + e.message);
     }).then(function () { busy(false); });
