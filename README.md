@@ -93,6 +93,23 @@ These are defaults, not indictments. The same framework can be configured to
 pass or fail every criterion here; what is scored is a configuration. Full table
 and per-verdict evidence: **[census](census/index.md)**.
 
+**Reconciliation with the preprint.** The preprint (arXiv:2609.00088, submitted
+31 August 2026) reports 27 configurations from 8 vendors, 24 in scope, and
+in-scope figures of 0/24 on C1, 9/24 recompute variants and 13/24 handed a
+reference. Both sets of numbers are correct on their own dates. The difference
+is exactly one record: `inspect-ai/model-graded-qa`, collected 31 August 2026
+and committed after the preprint was submitted. It is verifiable and therefore
+in scope, fails C1, and is a recompute variant — moving the totals to 28
+records from 10 packages and 9 vendors, and the in-scope figures to 0/25, 10/25
+and 13/25. The reference count is unchanged at 13 because Inspect's
+`{criterion}` slot carries a grading criterion, not a gold answer. Nothing was
+recounted and nothing was withdrawn.
+
+*A note on wording, because two counts are easily confused:* **9 vendors, 10
+packages.** LangChain is one vendor shipping two packages (`langchain-classic`
+and `openevals`). The preprint's "8 frameworks" is a vendor count. New copy
+should say "packages" or "vendors" explicitly rather than "frameworks".
+
 ## The criteria
 
 Four criteria, each externally cited, each with a stable anchor id (`#C1`–`#C4`)
