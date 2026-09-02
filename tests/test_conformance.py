@@ -347,7 +347,7 @@ def test_published_prose_agrees_with_derived_figures():
     # and was previously the only published claim nothing re-derived.
     published = list((ROOT / "criteria").rglob("*.md")) + [
         ROOT / "README.md", ROOT / "index.md", ROOT / "census" / "index.md",
-        ROOT / "CONTRIBUTING.md",
+        ROOT / "CONTRIBUTING.md", ROOT / "demo.html",
     ]
     for md in published:
         for n, m in re.findall(r"\b(\d{1,3}) of (\d{1,3})\b", md.read_text()):

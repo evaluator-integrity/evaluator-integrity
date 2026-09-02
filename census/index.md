@@ -1,5 +1,6 @@
 ---
-layout: default
+layout: main
+width: wide
 title: "Evaluator Integrity — Configuration Census"
 ---
 

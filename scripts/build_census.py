@@ -39,7 +39,8 @@ def render(records: list[dict], fig: dict) -> str:
     out = []
     w = out.append
     w("---")
-    w("layout: default")
+    w("layout: main")
+    w("width: wide")
     w('title: "Evaluator Integrity — Configuration Census"')
     w("---")
     w("")

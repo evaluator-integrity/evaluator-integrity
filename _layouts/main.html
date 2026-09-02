@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title | default: site.title }}</title>
+<meta name="description" content="{{ page.description | default: site.description }}">
+<link rel="canonical" href="{{ page.url | absolute_url }}">
+<meta property="og:title" content="{{ page.title | default: site.title }}">
+<meta property="og:description" content="{{ page.description | default: site.description }}">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314161a'/%3E%3Cg fill='%23fcfbf9'%3E%3Crect x='4' y='20' width='1.6' height='7'/%3E%3Crect x='10' y='16' width='1.6' height='11'/%3E%3Crect x='16' y='20' width='1.6' height='7'/%3E%3Crect x='22' y='11' width='1.6' height='16'/%3E%3C/g%3E%3C/svg%3E">
+<!--
+  The front-of-house layout: home, the demo, the census.
+  Sans-serif: this is a company's site, not a manuscript. The archival
+  criteria layout keeps its serif.
+
+  Not named site.html: `site` is in the exclude list in _config.yml (the
+  site/ notes directory), and Jekyll's exclude matching is by prefix, so
+  _layouts/site.html was dropped from the build without an error.
+
+  The criteria are NOT served with this layout. They keep `default.html`,
+  which has no navigation, no branding and no script, because a frozen,
+  citable document should render identically from an archive in ten years.
+  Anything decorative belongs out here, where it can change without touching
+  a published document.
+
+  Still no external stylesheet, font or script in this file. The demo page
+  loads a Python runtime, and says so on the page; nothing else does.
+-->
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #0f1a2b;
+    --muted: #55607a;
+    --rule: #e3e6ec;
+    --rule-strong: #b6bcc9;
+    --link: #0b4f9c;
+    --accent: #c0392b;
+    --accent-soft: #fbecea;
+    --amber: #b7791f;
+    --amber-soft: #fdf3e1;
+    --ok: #1f7a4d;
+    --ok-soft: #e6f4ec;
+    --panel: #f4f6f9;
+    --w: 45rem;
+    --wide: 72rem;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f1318;
+      --ink: #e7eaf0;
+      --muted: #9aa4b8;
+      --rule: #262c36;
+      --rule-strong: #414a58;
+      --link: #7fb6ee;
+      --accent: #f07a6a;
+      --accent-soft: #2c1a18;
+      --amber: #e0a94a;
+      --amber-soft: #2a2213;
+      --ok: #5fc48e;
+      --ok-soft: #14261c;
+      --panel: #171c24;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16.5px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--w); margin: 0 auto; padding: 0 1.4rem; }
+  .wrap.wide { max-width: var(--wide); }
+
+  a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--accent); }
+
+  /* ---- masthead ---------------------------------------------------- */
+  .masthead { padding-top: 1.5rem; }
+  .masthead .bar {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 0.4rem 1.6rem; justify-content: space-between;
+    max-width: var(--wide); margin: 0 auto; padding: 0 1.4rem 0.9rem;
+  }
+  .mark { text-decoration: none; color: inherit; display: block; }
+  .mark-name { display: block; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+  .mark-sub {
+    display: block; font-family: var(--mono); font-size: 0.68rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    margin-top: 0.15rem;
+  }
+  nav { display: flex; flex-wrap: wrap; gap: 0 1.15rem; }
+  nav a {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+    text-transform: uppercase; text-decoration: none; color: var(--muted);
+    padding: 0.2rem 0; border-bottom: 1px solid transparent;
+  }
+  nav a:hover, nav a[aria-current] { color: var(--ink); border-bottom-color: var(--accent); }
+
+  /* A calibration rule. The brand device is a measuring scale, drawn in
+     CSS so it costs nothing and cannot fail to load. */
+  .scale {
+    height: 11px;
+    border-bottom: 1px solid var(--rule-strong);
+    background:
+      repeating-linear-gradient(90deg, var(--rule) 0 1px, transparent 1px 9px)
+        bottom left / 100% 4px no-repeat,
+      repeating-linear-gradient(90deg, var(--rule-strong) 0 1px, transparent 1px 45px)
+        bottom left / 100% 9px no-repeat;
+  }
+
+  /* ---- type -------------------------------------------------------- */
+  main { padding: 3.2rem 0 5rem; }
+  h1, h2, h3 { line-height: 1.12; font-weight: 700; letter-spacing: -0.022em; }
+  h1 { font-size: clamp(2.1rem, 5vw, 3.3rem); margin: 0 0 1.1rem; }
+  h2 { font-size: 1.5rem; margin: 3.2rem 0 0.9rem; }
+  h3 { font-size: 1.08rem; margin: 2rem 0 0.6rem; }
+  p, ul, ol { margin: 0 0 1.1rem; }
+  ul, ol { padding-left: 1.2rem; }
+  li { margin-bottom: 0.45rem; }
+  strong { font-weight: 650; }
+  .lede { font-size: 1.22rem; line-height: 1.5; color: var(--ink); }
+  .muted { color: var(--muted); }
+  .kicker {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 0.9rem;
+  }
+  code, pre, kbd { font-family: var(--mono); font-size: 0.86em; }
+  code { background: var(--panel); padding: 0.1em 0.32em; border-radius: 3px; }
+  /* A digest or run id in inline code must break rather than push the page wide. */
+  p code, li code { overflow-wrap: anywhere; }
+  pre { background: var(--panel); padding: 0.85rem 1rem; border-radius: 5px;
+        overflow-x: auto; border: 1px solid var(--rule); }
+  pre code { background: none; padding: 0; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 3rem 0; }
+  blockquote {
+    margin: 1.4rem 0; padding: 0.1rem 0 0.1rem 1.1rem;
+    border-left: 2px solid var(--rule-strong); color: var(--muted);
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--rule); }
+  th { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+       text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  td code { background: none; padding: 0; }
+  .scroll-x { overflow-x: auto; margin: 1.4rem 0; }
+
+  /* On a wide page the prose column stays readable; only the wide objects --
+     tables, code panels, the runner -- use the extra width. */
+  .wrap.wide > h1, .wrap.wide > h2, .wrap.wide > h3,
+  .wrap.wide > p, .wrap.wide > ul, .wrap.wide > ol,
+  .wrap.wide > blockquote { max-width: 45rem; }
+  .wrap.wide > table { font-size: 0.88rem; }
+
+  h2[id], h3[id] { scroll-margin-top: 1rem; }
+  h2[id]:target, h3[id]:target { background: var(--accent-soft); }
+
+  .cta {
+    display: inline-block; font-family: var(--mono); font-size: 0.78rem;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    color: var(--paper); background: var(--ink);
+    padding: 0.8rem 1.3rem; border-radius: 4px; border: 1px solid var(--ink); font-weight: 600;
+  }
+  .cta:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cta-2 { background: none; color: var(--ink); border-color: var(--rule-strong); }
+  .cta-2:hover { background: none; color: var(--accent); border-color: var(--accent); }
+
+  footer {
+    border-top: 1px solid var(--rule); padding: 2rem 0 3.5rem;
+    font-size: 0.86rem; color: var(--muted);
+  }
+  footer a { color: var(--muted); }
+  footer p { margin: 0 0 0.5rem; }
+
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 1rem; top: 1rem; background: var(--paper); padding: 0.5rem; }
+
+  @media print {
+    .masthead, nav, footer, .cta { display: none; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="bar">
+    <a class="mark" href="{{ '/' | relative_url }}">
+      <span class="mark-name">Evaluator Integrity</span>
+      <span class="mark-sub">Evaluator auditing</span>
+    </a>
+    <nav>
+      <a href="{{ '/demo/' | relative_url }}">Demo</a>
+      <a href="{{ '/#findings' | relative_url }}">Findings</a>
+      <a href="https://arxiv.org/abs/2609.00088">Paper</a>
+      <a href="{{ '/census/' | relative_url }}">Census</a>
+      <a href="{{ '/criteria/v0.1/' | relative_url }}">Criteria</a>
+      <a href="{{ '/#contact' | relative_url }}">Contact</a>
+    </nav>
+  </div>
+  <div class="scale" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+<div class="wrap {{ page.width }}">
+{{ content }}
+</div>
+</main>
+
+<footer>
+  <div class="wrap {{ page.width }}">
+    <p>Idil Gozel · Evaluator Integrity · London ·
+       <a href="https://arxiv.org/abs/2609.00088">arXiv:2609.00088</a> ·
+       <a href="https://github.com/idilgozel/evaluator-integrity">source</a></p>
+    <p>Criteria and prose CC BY 4.0. Code Apache-2.0.</p>
+  </div>
+</footer>
+</body>
+</html>

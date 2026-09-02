@@ -87,6 +87,13 @@ jobs:
       - name: Census page matches the corpus
         run: python scripts/build_census.py --check
 
+      # The demo page quotes a candidate, a verdict and the judge's committed
+      # solution from the paper's published run records, and states counts
+      # derived from them. Generated for the same reason as the census: a
+      # quotation someone retyped is not a quotation.
+      - name: Demo page matches its sources
+        run: python scripts/build_demo.py --check
+
       - name: Verify the pre-commit hook is wired
         run: |
           test -x .githooks/pre-commit \

@@ -41,6 +41,7 @@ defaults:
 # Publish the criteria. Nothing else is a page.
 exclude:
   - conformance
+  - exhibit
   - scripts
   - tests
   - self-check
