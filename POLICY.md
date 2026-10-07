@@ -1,6 +1,4 @@
-# CLAUDE.md — evaluator-integrity
-
-You are **Claude Code Public**. Identify yourself that way in this repository.
+# Repository policy — evaluator-integrity
 
 This is the public face of Evaluator Integrity: criteria for auditing the
 evaluators AI teams measure their own systems with. Everything here is written
@@ -8,27 +6,24 @@ on the assumption that anyone can read it, because eventually anyone will.
 
 ## The pair
 
-A second repository, `evaluator-integrity-lab`, is worked on by a session called
-**Claude Code Private**. It holds the research harness, the full scored corpus
+A second repository holds the research harness, the full scored corpus
 including named configurations, and commercial and strategy material. It is
-permanently private.
+permanently private, and nothing bridges the two: no remote, no submodule, no
+subtree, and never shared git history. History is exactly what makes a leak
+permanent. Work moves between them by hand, deliberately, one direction at a
+time.
 
-You have no access to it. Do not ask for it, do not clone it, do not add it as a
-remote, submodule or subtree, and never propose sharing git history between the
-two. History is exactly what makes a leak permanent. Work moves between them
-only when Idil moves it by hand, deliberately, one direction at a time.
-
-**Every artefact has exactly one home.** A file in both repositories is a defect,
-not redundancy.
+**Every artefact has exactly one home.** A file in both repositories is a
+defect, not redundancy.
 
 ## Never in this repository
 
 - The search harness, and anything under `demo/`, `search/`, `harness/`,
   `outreach/`, `strategy/`, or any `corpus-private/`.
-- Corpus records from any stratum other than `framework_default`. Other strata
+- Corpus records from any stratum other than framework_default. Other strata
   describe individual organisations' own configurations and are publishable as
   **aggregates only**, with no attribution.
-- Records carrying `client` or `engagement` fields, and client or engagement
+- Records carrying client or engagement fields, and client or engagement
   material in any form.
 - Commercial and strategy documents: pricing, partner terms, positioning,
   outreach.
@@ -64,11 +59,18 @@ something else. Every page states its own version, date and status in its body,
 so a printed or archived copy stays self-identifying. `criteria/latest` is the
 only path whose meaning changes. Full policy: `criteria/README.md`.
 
+## Disclosure
+
+Findings in somebody else's evaluator go to its maintainers privately before
+they are published here. See [SECURITY.md](SECURITY.md).
+
 ## Licences
 
 - Code (`conformance/`, `scripts/`, `tests/`): **Apache-2.0**, `LICENSE`.
 - Criteria and prose (`criteria/`, `self-check/`, docs): **CC BY 4.0**,
   `LICENSE-DOCS`.
+- Disclosure packets (`disclosure/`): stated per packet; copied third-party
+  material keeps its own licence.
 
 Criteria text is written to be quoted. Assume any sentence will be pulled out of
 context into someone else's document: plain, self-contained, no dependence on
@@ -77,10 +79,11 @@ deciding whether to trust the method.
 
 ## Working here
 
-- Content that is coming from the lab is marked `TODO(port)`. Leave it empty and
-  marked. Never invent placeholder criteria or corpus records — an empty slot
-  cannot be cited by mistake; an invention can.
-- Keep CI green. A project telling others to take measurement seriously does not
-  ship a red build.
-- Author: Idil Gozel <idilgozel@evaluatorintegrity.com>, Evaluator Integrity, London.
-- Do not add co-author or AI-attribution trailers to commits.
+- Content still to come from the private repository is marked `TODO(port)`.
+  Leave it empty and marked. Never invent placeholder criteria or corpus
+  records — an empty slot cannot be cited by mistake; an invention can.
+- Keep CI green. A project telling others to take measurement seriously does
+  not ship a red build.
+- Commits carry no co-author or attribution trailers.
+- Author: Idil Gozel <idilgozel@evaluatorintegrity.com>, Evaluator Integrity,
+  London.

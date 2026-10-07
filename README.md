@@ -150,7 +150,7 @@ Absences on purpose, not gaps waiting to be filled.
   published as aggregates with no attribution, and records tied to a client or
   an engagement are never published in any form.
 - **The scored corpus behind those aggregates, and the research harness.** They
-  live in a separate, permanently private repository. See [CLAUDE.md](CLAUDE.md)
+  live in a separate, permanently private repository. See [POLICY.md](POLICY.md)
   for the boundary and [scripts/check_public_safe.py](scripts/check_public_safe.py)
   for the check that enforces it on every commit and over the whole history.
 

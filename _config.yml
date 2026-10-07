@@ -48,7 +48,7 @@ exclude:
   - site
   - .githooks
   - .github
-  - CLAUDE.md
+  - POLICY.md
   - CONTRIBUTING.md
   - README.md
   - CITATION.cff

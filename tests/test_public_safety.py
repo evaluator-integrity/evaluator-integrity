@@ -60,25 +60,25 @@ def test_denylist_file_exists_and_loads():
 
 
 def _stated_forbidden_dirs() -> set[str]:
-    """The directory names CLAUDE.md's 'Never in this repository' section names.
+    """The directory names POLICY.md's 'Never in this repository' section names.
 
     Parsed from the policy rather than retyped, so the policy statement is the
     single source and a test cannot drift away from it silently.
     """
-    section = (REPO_ROOT / "CLAUDE.md").read_text()
+    section = (REPO_ROOT / "POLICY.md").read_text()
     section = section.split("## Never in this repository")[1].split("\n##")[0]
     return set(re.findall(r"`([a-z-]+)/`", section))
 
 
 def test_guard_forbids_exactly_what_the_policy_names():
-    """POLICY: CLAUDE.md, 'Never in this repository'.
+    """POLICY: POLICY.md, 'Never in this repository'.
 
     The list existed in three places -- the policy prose, the guard's tuple,
     and this test -- with nothing checking they agreed. Adding a directory to
     the policy would have left the guard unchanged and every test still green.
     """
     assert _stated_forbidden_dirs() == set(guard.FORBIDDEN_DIR_NAMES), (
-        "CLAUDE.md and scripts/check_public_safe.py disagree about which "
+        "POLICY.md and scripts/check_public_safe.py disagree about which "
         "directories are forbidden. The policy is authoritative; update the "
         "guard."
     )
@@ -288,7 +288,7 @@ def test_working_tree_failure_warns_that_history_may_be_affected(capsys):
 
 
 def test_history_failure_does_not_tell_the_reader_to_delete_the_file(capsys):
-    """POLICY: CLAUDE.md -- "Making this repository public exposes its history,
+    """POLICY: POLICY.md -- "Making this repository public exposes its history,
     not its current state ... There is no undo."
 
     The worktree wording ("this material is already in the working tree") is
