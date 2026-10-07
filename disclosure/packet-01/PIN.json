@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/UKGovernmentBEIS/inspect_evals",
+  "commit": "e3402e36c6c1c161797a8b8e7ebbffca05e47fea",
+  "sources": {
+    "upstream/judge_estimate/parse.py": {
+      "source": "src/inspect_evals/mask/judge_estimate/parse.py",
+      "sha256": "fff7ff40ea397b83e4517f74ee909a64bf114cca5315100bddbf2ba6ee4ec3b8"
+    },
+    "upstream/classify.py": {
+      "source": "src/inspect_evals/mask/classify.py",
+      "sha256": "d213f8b3321c5ed5bb71d43c3dc50a23a6544301fc0aa1fa4ef9cb2b838af54d"
+    },
+    "upstream/types.py": {
+      "source": "src/inspect_evals/mask/types.py",
+      "sha256": "c89874182835a7e5c0ffc0e9dd712f36f10fa892e6742a16250b0ea5f21c736c"
+    }
+  },
+  "scope": "MASK binary provided-facts statements"
+}

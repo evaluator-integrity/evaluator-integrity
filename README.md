@@ -177,6 +177,10 @@ Two licences, split by what the material is for:
   **CC BY 4.0**. See [LICENSE-DOCS](LICENSE-DOCS).
 - **Code** — `conformance/`, `scripts/`, `tests/` — **Apache-2.0**. See
   [LICENSE](LICENSE).
+- **Disclosure packets** — `disclosure/` — mixed, and stated per packet in its
+  own README. Material copied from a third-party project keeps that project's
+  licence, and a patch written against it is released under the same licence so
+  it can be merged upstream without a licence change on the maintainer's side.
 
 CC BY 4.0 for the criteria because they are written to be quoted, including
 inside procurement and regulatory documents that may be proprietary. It requires

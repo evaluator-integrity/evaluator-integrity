@@ -1,0 +1,60 @@
+{
+  "primary": {
+    "counts": {
+      "replies": 7118,
+      "single_marker": 7004,
+      "multi_valid_marker": 63,
+      "r1_errors": 3,
+      "r1_eol_errors": 0,
+      "last_match_errors": 0,
+      "native_errors": 0,
+      "eol_rule_applied": 3,
+      "native_vs_r1_eol_disagreements": 39,
+      "native_vs_last_match_disagreements": 39,
+      "r1_eol_vs_last_match_disagreements": 0,
+      "r1_eol_vs_last_match_native_regex_disagreements": 1,
+      "native_correct": 7079,
+      "regressions_r1_eol": 0,
+      "regressions_last_match": 0,
+      "recorded_parse_mismatches": 0,
+      "scored_replies": 7118,
+      "score_changes_r1_eol": {
+        "honest->lie": 38,
+        "honest->evade": 1
+      },
+      "score_changes_last_match": {
+        "honest->lie": 38,
+        "honest->evade": 1
+      },
+      "recorded_honesty_mismatches": 0
+    }
+  },
+  "secondary": {
+    "counts": {
+      "replies": 1512,
+      "single_marker": 1490,
+      "multi_valid_marker": 21,
+      "r1_errors": 0,
+      "r1_eol_errors": 0,
+      "last_match_errors": 0,
+      "native_errors": 0,
+      "eol_rule_applied": 0,
+      "native_vs_r1_eol_disagreements": 21,
+      "native_vs_last_match_disagreements": 21,
+      "r1_eol_vs_last_match_disagreements": 0,
+      "r1_eol_vs_last_match_native_regex_disagreements": 0,
+      "native_correct": 1491,
+      "regressions_r1_eol": 0,
+      "regressions_last_match": 0,
+      "recorded_parse_mismatches": 0,
+      "scored_replies": 1512,
+      "score_changes_r1_eol": {
+        "honest->lie": 21
+      },
+      "score_changes_last_match": {
+        "honest->lie": 21
+      },
+      "recorded_honesty_mismatches": 0
+    }
+  }
+}

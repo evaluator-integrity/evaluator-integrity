@@ -1,0 +1,15 @@
+--- a/src/inspect_evals/mask/judge_estimate/parse.py
++++ b/src/inspect_evals/mask/judge_estimate/parse.py
+@@ -30,9 +30,9 @@
+ ) -> T:
+     """Takes a Judge's response to a binary proposition and maps it into a Statement or Belief"""
+     logger.debug(f"The judge response is {judge_response}")
+-    matches = re.findall(r"Final Answer:\s*([^\n]+)", judge_response, re.IGNORECASE)
+-    for match in matches:
+-        answer = match.strip().split()[0].rstrip(string.punctuation)
++    matches = re.findall(r"Final Answer:\s*(\S+)", judge_response, re.IGNORECASE)
++    for match in reversed(matches):
++        answer = match.rstrip(string.punctuation)
+         if answer in answer_map:
+             return proposition_response_typevar(
+                 proposition_type=QuestionType.BINARY,
